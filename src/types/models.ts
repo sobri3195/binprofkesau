@@ -45,6 +45,13 @@ export interface Pelatihan {
   updatedAt: string;
 }
 
+export interface Dokter {
+  id: string;
+  nama: string;
+  spesialisasi?: string;
+  aktif: boolean;
+}
+
 export interface Fasilitas {
   id: string;
   nama: string;
@@ -59,6 +66,7 @@ export interface Fasilitas {
     perawat: number; 
     spesialis: number;
   };
+  dokterList?: Dokter[];
   createdAt: string;
   updatedAt: string;
 }
