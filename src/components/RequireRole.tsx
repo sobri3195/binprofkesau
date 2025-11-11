@@ -1,0 +1,18 @@
+import { useAuthStore } from '@/store/authStore';
+import { Role } from '@/types/models';
+
+interface RequireRoleProps {
+  roles: Role[];
+  children: React.ReactNode;
+  fallback?: React.ReactNode;
+}
+
+export function RequireRole({ roles, children, fallback = null }: RequireRoleProps) {
+  const { user } = useAuthStore();
+
+  if (!user || !roles.includes(user.role)) {
+    return <>{fallback}</>;
+  }
+
+  return <>{children}</>;
+}
