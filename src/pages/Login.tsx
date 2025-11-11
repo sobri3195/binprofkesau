@@ -86,6 +86,7 @@ export function Login() {
                 <li>AdminSatuan: admin.halim@binprofkes.mil.id / admin123</li>
                 <li>Operator: operator@binprofkes.mil.id / operator123</li>
                 <li>Viewer: viewer@binprofkes.mil.id / viewer123</li>
+                <li className="text-primary font-semibold">Bypass: bypass@binprofkes.mil.id / bypass123</li>
               </ul>
             </div>
           </form>
