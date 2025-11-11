@@ -3,7 +3,7 @@ import { useAuthStore } from '@/store/authStore';
 import { Login } from '@/pages/Login';
 import { Dashboard } from '@/pages/Dashboard';
 import { PersonelPage } from '@/pages/Personel';
-import { PelatihanPage } from '@/pages/Pelatihan';
+import { PendidikanPelatihanPage } from '@/pages/PendidikanPelatihan';
 import { PetaPage } from '@/pages/Peta';
 import { PetaSebaranPage } from '@/pages/PetaSebaran';
 import { NotifikasiPage } from '@/pages/Notifikasi';
@@ -47,7 +47,7 @@ function App() {
           <Route index element={<Navigate to="/app/dashboard" replace />} />
           <Route path="dashboard" element={<Dashboard />} />
           <Route path="personel" element={<PersonelPage />} />
-          <Route path="pelatihan" element={<PelatihanPage />} />
+          <Route path="pelatihan" element={<PendidikanPelatihanPage />} />
           <Route path="peta" element={<PetaPage />} />
           <Route path="peta-sebaran" element={<PetaSebaranPage />} />
           <Route path="notifikasi" element={<NotifikasiPage />} />

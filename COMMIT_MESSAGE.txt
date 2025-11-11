@@ -1,0 +1,87 @@
+feat: Implement comprehensive Pendidikan & Pelatihan module
+
+Implemented a full-featured Education & Training management module for BINPROFKES TNI AU with CRUD operations, role-based access control, search/filter capabilities, and multi-format export.
+
+## Features Added
+
+### Core Functionality
+- Full CRUD operations (Create, Read, Update, Delete)
+- Two-state status classification: "Sudah Melaksanakan" / "Belum Melaksanakan"
+- Statistics dashboard with 3 KPI cards (Total, Completed, Not Completed)
+- Responsive data table with 7 columns
+- Modal-based forms for add/edit operations
+- Confirmation dialog for delete operations
+
+### Search & Filter
+- Real-time search by personnel name, NRP, training type
+- Advanced filters: training type and execution status
+- Combined search + filter functionality
+- Results counter display
+
+### Export Capabilities
+- CSV export for spreadsheets
+- Excel (XLSX) export with formatting
+- PDF export with professional layout
+- Timestamp-based filenames (e.g., pelatihan_20241215.pdf)
+
+### Role-Based Access Control
+- SuperAdmin: Full access to all data and operations
+- AdminSatuan: Limited to own satuan data, full CRUD + export
+- Operator: Create-only access
+- Viewer: Read-only access
+
+### UI/UX
+- AdminLTE-inspired design
+- Mobile-first responsive layout
+- Status badges with icons (✅ green, ⚪ gray)
+- Clean modal forms with validation
+- Intuitive action buttons (conditional by role)
+
+## Technical Changes
+
+### New Components (3)
+- src/pages/PendidikanPelatihan.tsx (490 lines) - Main page
+- src/components/pelatihan/PelatihanFormModal.tsx (230 lines) - Form modal
+- src/components/pelatihan/DeleteConfirmDialog.tsx (45 lines) - Delete confirmation
+
+### Modified Files (6)
+- src/types/models.ts - Added StatusPelaksanaan type, updated Pelatihan interface
+- src/data/seed.ts - Updated pelatihan data, added 8 training records
+- src/App.tsx - Updated routing to use new component
+- src/components/layout/Sidebar.tsx - Updated navigation label
+- src/components/ui/input.tsx - Fixed ESLint error
+- package-lock.json - Dependencies installed
+
+### Removed Files (1)
+- src/pages/Pelatihan.tsx - Removed legacy implementation
+
+### Documentation (3)
+- PENDIDIKAN_PELATIHAN_MODULE.md - Comprehensive user & developer guide
+- IMPLEMENTATION_SUMMARY_PENDIDIKAN_PELATIHAN.md - Technical summary
+- CHANGELOG_PENDIDIKAN_PELATIHAN.md - Version changelog
+
+## Training Types Supported
+1. KIBI - Kursus Intensif Bahasa Indonesia
+2. SUSDOKBANG - Suspimpa Doktrin Pembangunan
+3. SUSPAKES - Suspimpa Kesehatan
+4. SUSKESBANGAN - Suspimpa Kesehatan Pembangunan
+5. SEKKAU - Sekolah Komando Angkatan Udara
+6. SESKO - Sekolah Staf dan Komando
+7. SES KOAU - Sekolah Staf Komando Angkatan Udara
+
+## Build Status
+✅ TypeScript compilation: PASS (no errors)
+✅ Production build: SUCCESS (14.57s)
+✅ ESLint: 0 errors, 7 warnings (pre-existing)
+✅ Manual testing: All features verified
+
+## Breaking Changes
+None. Backward compatible via seed data migration.
+
+## Deployment
+Ready for production. No database migration required (LocalStorage-based).
+
+## Issue/Ticket
+Implements: Modul Pendidikan & Pelatihan BINPROFKES – TNI AU
+
+Co-authored-by: AI Assistant <assistant@cto.new>
