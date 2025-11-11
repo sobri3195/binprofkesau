@@ -5,6 +5,7 @@ import { Dashboard } from '@/pages/Dashboard';
 import { PersonelPage } from '@/pages/Personel';
 import { PelatihanPage } from '@/pages/Pelatihan';
 import { PetaPage } from '@/pages/Peta';
+import { PetaSebaranPage } from '@/pages/PetaSebaran';
 import { NotifikasiPage } from '@/pages/Notifikasi';
 import { LogAktivitasPage } from '@/pages/LogAktivitas';
 import { UsersPage } from '@/pages/Users';
@@ -48,6 +49,7 @@ function App() {
           <Route path="personel" element={<PersonelPage />} />
           <Route path="pelatihan" element={<PelatihanPage />} />
           <Route path="peta" element={<PetaPage />} />
+          <Route path="peta-sebaran" element={<PetaSebaranPage />} />
           <Route path="notifikasi" element={<NotifikasiPage />} />
           <Route
             path="log"
