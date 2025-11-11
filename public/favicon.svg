@@ -1,0 +1,22 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 64 64">
+  <defs>
+    <linearGradient id="skyGradient" x1="0%" y1="0%" x2="0%" y2="100%">
+      <stop offset="0%" style="stop-color:#3498db;stop-opacity:1" />
+      <stop offset="100%" style="stop-color:#2980b9;stop-opacity:1" />
+    </linearGradient>
+  </defs>
+  
+  <!-- Background circle -->
+  <circle cx="32" cy="32" r="30" fill="url(#skyGradient)" stroke="#1a5276" stroke-width="2"/>
+  
+  <!-- Medical cross in white -->
+  <rect x="28" y="18" width="8" height="28" fill="white" rx="1"/>
+  <rect x="18" y="28" width="28" height="8" fill="white" rx="1"/>
+  
+  <!-- Wings - representing Air Force -->
+  <path d="M 12 32 Q 8 28, 10 24 L 22 30 Z" fill="white" opacity="0.9"/>
+  <path d="M 52 32 Q 56 28, 54 24 L 42 30 Z" fill="white" opacity="0.9"/>
+  
+  <!-- Small star accent - military symbol -->
+  <circle cx="32" cy="32" r="3" fill="#e74c3c"/>
+</svg>

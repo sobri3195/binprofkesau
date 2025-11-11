@@ -39,6 +39,15 @@ const users: User[] = [
     createdAt: '2024-01-01T00:00:00.000Z',
     updatedAt: '2024-01-01T00:00:00.000Z',
   },
+  {
+    id: '5',
+    name: 'Bypass Account',
+    email: 'bypass@binprofkes.mil.id',
+    password: 'bypass123',
+    role: 'SuperAdmin',
+    createdAt: '2024-01-01T00:00:00.000Z',
+    updatedAt: '2024-01-01T00:00:00.000Z',
+  },
 ];
 
 const personel: Personel[] = [
