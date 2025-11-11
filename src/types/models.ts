@@ -1,5 +1,6 @@
 export type Pangkat = "Tamtama" | "Bintara" | "Perwira";
 export type StatusSertifikat = "Berlaku" | "Akan Berakhir" | "Kedaluwarsa";
+export type StatusPelaksanaan = "Sudah Melaksanakan" | "Belum Melaksanakan";
 export type KategoriNotifikasi = "Informasi" | "Peringatan" | "Pembaruan" | "Belum sekolah" | "Belum pindah" | "Belum PPDS";
 export type JenisFasilitas = "Lanud" | "RSAU" | "Kodau" | "Koopsau" | "Satrad";
 export type Role = "SuperAdmin" | "AdminSatuan" | "Operator" | "Viewer";
@@ -37,10 +38,10 @@ export interface Pelatihan {
   id: string;
   personelId: string;
   jenis: "KIBI" | "SUSDOKBANG" | "SUSPAKES" | "SUSKESBANGAN" | "SEKKAU" | "SESKO" | "SES KOAU";
-  tanggalMulai: string;
-  tanggalSelesai: string;
-  sertifikatBerlakuHingga: string;
-  status: StatusSertifikat;
+  tanggalMulai?: string;
+  tanggalSelesai?: string;
+  sertifikatBerlakuHingga?: string;
+  statusPelaksanaan: StatusPelaksanaan;
   createdAt: string;
   updatedAt: string;
 }
