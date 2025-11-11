@@ -53,7 +53,23 @@ Sistem Informasi Bina Profesional Kesehatan TNI Angkatan Udara.
 
 ## Demo Akun
 
-Gunakan kredensial berikut untuk login:
+### 🚀 Quick Login (One-Click)
+
+Halaman login dilengkapi dengan **Quick Login Bypass** untuk kemudahan development dan testing!
+
+**Fitur:**
+- ✨ **One-Click Login** - Klik tombol untuk langsung masuk tanpa ketik email/password
+- 🎨 **Visual Per Role** - Setiap akun punya warna dan icon berbeda
+- ⚡ **Instant Access** - Otomatis redirect ke dashboard
+- 💾 **LocalStorage** - Data tersimpan otomatis
+
+Cukup buka halaman login dan klik salah satu tombol akun demo!
+
+**Detail lengkap:** Lihat [QUICK_LOGIN_BYPASS.md](./QUICK_LOGIN_BYPASS.md)
+
+### Manual Login
+
+Atau gunakan kredensial berikut untuk login manual:
 
 | Role | Email | Password |
 |------|-------|----------|
@@ -61,6 +77,7 @@ Gunakan kredensial berikut untuk login:
 | AdminSatuan | admin.halim@binprofkes.mil.id | admin123 |
 | Operator | operator@binprofkes.mil.id | operator123 |
 | Viewer | viewer@binprofkes.mil.id | viewer123 |
+| **Bypass** | **bypass@binprofkes.mil.id** | **bypass123** |
 
 ## Instalasi & Menjalankan
 
