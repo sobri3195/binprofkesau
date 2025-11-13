@@ -9,8 +9,12 @@ interface UIState {
   setTheme: (theme: 'light' | 'dark') => void;
 }
 
+// Check if we're on mobile on initial load
+const isMobile = () => typeof window !== 'undefined' && window.innerWidth < 1024;
+
 export const useUIStore = create<UIState>((set) => ({
-  sidebarOpen: true,
+  // Default: closed on mobile, open on desktop
+  sidebarOpen: !isMobile(),
   theme: 'light',
 
   toggleSidebar: () => set((state) => ({ sidebarOpen: !state.sidebarOpen })),

@@ -15,33 +15,32 @@ export function Topbar() {
   };
 
   return (
-    <header className="sticky top-0 z-40 flex h-16 items-center gap-4 border-b bg-background px-6">
+    <header className="sticky top-0 z-40 flex h-16 items-center gap-2 sm:gap-4 border-b bg-background px-4 sm:px-6">
       <Button
         variant="ghost"
         size="icon"
         onClick={toggleSidebar}
-        className="lg:flex"
       >
         <Menu className="h-5 w-5" />
       </Button>
 
-      <div className="flex-1">
-        <h2 className="text-lg font-semibold">
-          Sistem Informasi BINPROFKES TNI AU
+      <div className="flex-1 min-w-0">
+        <h2 className="text-sm sm:text-lg font-semibold truncate">
+          <span className="hidden sm:inline">Sistem Informasi </span>BINPROFKES<span className="hidden md:inline"> TNI AU</span>
         </h2>
       </div>
 
-      <div className="flex items-center gap-2">
+      <div className="flex items-center gap-1 sm:gap-2">
         <Button variant="ghost" size="icon" onClick={toggleTheme}>
           {theme === 'light' ? (
-            <Moon className="h-5 w-5" />
+            <Moon className="h-4 w-4 sm:h-5 sm:w-5" />
           ) : (
-            <Sun className="h-5 w-5" />
+            <Sun className="h-4 w-4 sm:h-5 sm:w-5" />
           )}
         </Button>
 
         <Button variant="ghost" size="icon" onClick={handleLogout} title="Logout">
-          <LogOut className="h-5 w-5" />
+          <LogOut className="h-4 w-4 sm:h-5 sm:w-5" />
         </Button>
       </div>
     </header>

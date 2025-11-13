@@ -76,16 +76,16 @@ export function PersonelPage() {
   };
 
   return (
-    <div className="space-y-6">
-      <div className="flex items-center justify-between">
+    <div className="space-y-4 sm:space-y-6">
+      <div className="flex flex-col sm:flex-row sm:items-center sm:justify-between gap-3">
         <div>
-          <h1 className="text-3xl font-bold">Personel</h1>
-          <p className="text-muted-foreground">
+          <h1 className="text-2xl sm:text-3xl font-bold">Personel</h1>
+          <p className="text-sm sm:text-base text-muted-foreground">
             Kelola data tenaga kesehatan TNI AU
           </p>
         </div>
         {canCreate && (
-          <Button>
+          <Button className="w-full sm:w-auto">
             <Plus className="mr-2 h-4 w-4" />
             Tambah Personel
           </Button>
@@ -97,47 +97,50 @@ export function PersonelPage() {
           <CardTitle>Data Personel</CardTitle>
         </CardHeader>
         <CardContent>
-          <div className="mb-4 flex flex-wrap gap-4">
-            <div className="flex-1 min-w-[200px]">
-              <div className="relative">
-                <Search className="absolute left-2 top-2.5 h-4 w-4 text-muted-foreground" />
-                <Input
-                  placeholder="Cari nama atau NRP..."
-                  value={search}
-                  onChange={(e) => setSearch(e.target.value)}
-                  className="pl-8"
-                />
+          <div className="mb-4 space-y-3">
+            <div className="flex flex-col sm:flex-row gap-2 sm:gap-4">
+              <div className="flex-1">
+                <div className="relative">
+                  <Search className="absolute left-2 top-2.5 h-4 w-4 text-muted-foreground" />
+                  <Input
+                    placeholder="Cari nama atau NRP..."
+                    value={search}
+                    onChange={(e) => setSearch(e.target.value)}
+                    className="pl-8"
+                  />
+                </div>
               </div>
+
+              <select
+                value={filterPangkat}
+                onChange={(e) => setFilterPangkat(e.target.value as Pangkat | '')}
+                className="rounded-md border border-input bg-background px-3 py-2 text-sm w-full sm:w-auto"
+              >
+                <option value="">Semua Pangkat</option>
+                <option value="Tamtama">Tamtama</option>
+                <option value="Bintara">Bintara</option>
+                <option value="Perwira">Perwira</option>
+              </select>
             </div>
 
-            <select
-              value={filterPangkat}
-              onChange={(e) => setFilterPangkat(e.target.value as Pangkat | '')}
-              className="rounded-md border border-input bg-background px-3 py-2 text-sm"
-            >
-              <option value="">Semua Pangkat</option>
-              <option value="Tamtama">Tamtama</option>
-              <option value="Bintara">Bintara</option>
-              <option value="Perwira">Perwira</option>
-            </select>
-
-            <div className="flex gap-2">
-              <Button variant="outline" size="sm" onClick={handleExportCSV}>
-                <Download className="mr-2 h-4 w-4" />
+            <div className="flex gap-2 overflow-x-auto pb-1">
+              <Button variant="outline" size="sm" onClick={handleExportCSV} className="shrink-0">
+                <Download className="mr-1 sm:mr-2 h-4 w-4" />
                 CSV
               </Button>
-              <Button variant="outline" size="sm" onClick={handleExportExcel}>
-                <Download className="mr-2 h-4 w-4" />
+              <Button variant="outline" size="sm" onClick={handleExportExcel} className="shrink-0">
+                <Download className="mr-1 sm:mr-2 h-4 w-4" />
                 Excel
               </Button>
-              <Button variant="outline" size="sm" onClick={handleExportPDF}>
-                <Download className="mr-2 h-4 w-4" />
+              <Button variant="outline" size="sm" onClick={handleExportPDF} className="shrink-0">
+                <Download className="mr-1 sm:mr-2 h-4 w-4" />
                 PDF
               </Button>
             </div>
           </div>
 
-          <div className="rounded-md border">
+          {/* Desktop Table */}
+          <div className="hidden md:block rounded-md border">
             <div className="overflow-x-auto">
               <table className="w-full">
                 <thead className="bg-muted/50">
@@ -211,6 +214,86 @@ export function PersonelPage() {
                 </tbody>
               </table>
             </div>
+          </div>
+
+          {/* Mobile Cards */}
+          <div className="md:hidden space-y-3">
+            {filteredPersonel.length === 0 ? (
+              <div className="text-center py-8 text-sm text-muted-foreground">
+                Tidak ada data personel
+              </div>
+            ) : (
+              filteredPersonel.map((p) => (
+                <Card key={p.id} className="overflow-hidden">
+                  <CardContent className="p-4">
+                    <div className="space-y-3">
+                      <div className="flex items-start justify-between gap-2">
+                        <div className="flex-1 min-w-0">
+                          <h3 className="font-medium text-gray-900">{p.nama}</h3>
+                          <p className="text-sm text-gray-500">NRP: {p.nrp}</p>
+                        </div>
+                        <Badge variant={p.status === 'Aktif' ? 'success' : 'warning'} className="shrink-0">
+                          {p.status}
+                        </Badge>
+                      </div>
+                      
+                      <div className="grid grid-cols-2 gap-2 text-sm">
+                        <div>
+                          <span className="text-gray-500">Pangkat:</span>
+                          <div className="mt-1">
+                            <Badge variant={
+                              p.pangkat === 'Perwira' ? 'default' :
+                              p.pangkat === 'Bintara' ? 'secondary' :
+                              'outline'
+                            } className="text-xs">
+                              {p.pangkat}
+                            </Badge>
+                          </div>
+                        </div>
+                        <div>
+                          <span className="text-gray-500">Korps:</span>
+                          <p className="font-medium text-gray-900 mt-1">{p.korps}</p>
+                        </div>
+                        <div className="col-span-2">
+                          <span className="text-gray-500">Satuan:</span>
+                          <p className="font-medium text-gray-900 mt-1">{p.satuan}</p>
+                        </div>
+                        <div className="col-span-2">
+                          <span className="text-gray-500">Jabatan:</span>
+                          <p className="font-medium text-gray-900 mt-1">{p.jabatan}</p>
+                        </div>
+                        <div className="col-span-2">
+                          <span className="text-gray-500">Pekerjaan:</span>
+                          <p className="font-medium text-gray-900 mt-1">{p.pekerjaan}</p>
+                        </div>
+                      </div>
+
+                      {(canEdit || canDelete) && (
+                        <div className="flex gap-2 pt-2 border-t">
+                          {canEdit && (
+                            <Button variant="outline" size="sm" className="flex-1">
+                              <Pencil className="h-4 w-4 mr-1" />
+                              Edit
+                            </Button>
+                          )}
+                          {canDelete && (
+                            <Button
+                              variant="outline"
+                              size="sm"
+                              onClick={() => handleDelete(p.id)}
+                              className="flex-1 text-destructive hover:bg-destructive/10"
+                            >
+                              <Trash2 className="h-4 w-4 mr-1" />
+                              Hapus
+                            </Button>
+                          )}
+                        </div>
+                      )}
+                    </div>
+                  </CardContent>
+                </Card>
+              ))
+            )}
           </div>
 
           <div className="mt-4 text-sm text-muted-foreground">
