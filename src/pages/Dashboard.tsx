@@ -77,23 +77,23 @@ export function Dashboard() {
   }, [personel]);
 
   return (
-    <div className="space-y-6">
+    <div className="space-y-4 sm:space-y-6">
       <div>
-        <h1 className="text-3xl font-bold">Dashboard</h1>
-        <p className="text-muted-foreground">
+        <h1 className="text-2xl sm:text-3xl font-bold">Dashboard</h1>
+        <p className="text-sm sm:text-base text-muted-foreground mt-1">
           Ringkasan data tenaga kesehatan TNI Angkatan Udara
         </p>
       </div>
 
-      <div className="grid gap-4 md:grid-cols-2 lg:grid-cols-4">
+      <div className="grid gap-3 sm:gap-4 grid-cols-2 lg:grid-cols-4">
         <Card>
           <CardHeader className="flex flex-row items-center justify-between space-y-0 pb-2">
-            <CardTitle className="text-sm font-medium">Total Personel</CardTitle>
+            <CardTitle className="text-xs sm:text-sm font-medium">Total Personel</CardTitle>
             <Users className="h-4 w-4 text-muted-foreground" />
           </CardHeader>
           <CardContent>
-            <div className="text-2xl font-bold">{stats.total}</div>
-            <p className="text-xs text-muted-foreground">
+            <div className="text-xl sm:text-2xl font-bold">{stats.total}</div>
+            <p className="text-xs text-muted-foreground hidden sm:block">
               Tenaga kesehatan aktif
             </p>
           </CardContent>
@@ -101,12 +101,12 @@ export function Dashboard() {
 
         <Card>
           <CardHeader className="flex flex-row items-center justify-between space-y-0 pb-2">
-            <CardTitle className="text-sm font-medium">Dokter</CardTitle>
+            <CardTitle className="text-xs sm:text-sm font-medium">Dokter</CardTitle>
             <Stethoscope className="h-4 w-4 text-muted-foreground" />
           </CardHeader>
           <CardContent>
-            <div className="text-2xl font-bold">{stats.dokter}</div>
-            <p className="text-xs text-muted-foreground">
+            <div className="text-xl sm:text-2xl font-bold">{stats.dokter}</div>
+            <p className="text-xs text-muted-foreground hidden sm:block">
               Dokter umum + {stats.dokterGigi} dokter gigi
             </p>
           </CardContent>
@@ -114,12 +114,12 @@ export function Dashboard() {
 
         <Card>
           <CardHeader className="flex flex-row items-center justify-between space-y-0 pb-2">
-            <CardTitle className="text-sm font-medium">Perawat</CardTitle>
+            <CardTitle className="text-xs sm:text-sm font-medium">Perawat</CardTitle>
             <Heart className="h-4 w-4 text-muted-foreground" />
           </CardHeader>
           <CardContent>
-            <div className="text-2xl font-bold">{stats.perawat}</div>
-            <p className="text-xs text-muted-foreground">
+            <div className="text-xl sm:text-2xl font-bold">{stats.perawat}</div>
+            <p className="text-xs text-muted-foreground hidden sm:block">
               Perawat kesehatan
             </p>
           </CardContent>
@@ -127,31 +127,31 @@ export function Dashboard() {
 
         <Card>
           <CardHeader className="flex flex-row items-center justify-between space-y-0 pb-2">
-            <CardTitle className="text-sm font-medium">Spesialis</CardTitle>
+            <CardTitle className="text-xs sm:text-sm font-medium">Spesialis</CardTitle>
             <Activity className="h-4 w-4 text-muted-foreground" />
           </CardHeader>
           <CardContent>
-            <div className="text-2xl font-bold">{stats.spesialis}</div>
-            <p className="text-xs text-muted-foreground">
+            <div className="text-xl sm:text-2xl font-bold">{stats.spesialis}</div>
+            <p className="text-xs text-muted-foreground hidden sm:block">
               Dokter spesialis
             </p>
           </CardContent>
         </Card>
       </div>
 
-      <div className="grid gap-4 lg:grid-cols-2">
+      <div className="grid gap-3 sm:gap-4 lg:grid-cols-2">
         <Card>
           <CardHeader>
-            <CardTitle>Distribusi Per Pangkat</CardTitle>
+            <CardTitle className="text-base sm:text-lg">Distribusi Per Pangkat</CardTitle>
           </CardHeader>
-          <CardContent>
-            <ResponsiveContainer width="100%" height={300}>
-              <BarChart data={pangkatData}>
+          <CardContent className="p-4 sm:p-6">
+            <ResponsiveContainer width="100%" height={250}>
+              <BarChart data={pangkatData} margin={{ top: 5, right: 10, left: 0, bottom: 5 }}>
                 <CartesianGrid strokeDasharray="3 3" />
-                <XAxis dataKey="name" />
-                <YAxis />
-                <Tooltip />
-                <Legend />
+                <XAxis dataKey="name" tick={{ fontSize: 10 }} angle={-45} textAnchor="end" height={60} />
+                <YAxis tick={{ fontSize: 10 }} />
+                <Tooltip contentStyle={{ fontSize: 12 }} />
+                <Legend wrapperStyle={{ fontSize: 11 }} />
                 <Bar dataKey="value" fill="#3b82f6" name="Jumlah" />
               </BarChart>
             </ResponsiveContainer>
@@ -160,26 +160,31 @@ export function Dashboard() {
 
         <Card>
           <CardHeader>
-            <CardTitle>Distribusi Per Satuan (Top 5)</CardTitle>
+            <CardTitle className="text-base sm:text-lg">Distribusi Per Satuan (Top 5)</CardTitle>
           </CardHeader>
-          <CardContent>
-            <ResponsiveContainer width="100%" height={300}>
+          <CardContent className="p-4 sm:p-6">
+            <ResponsiveContainer width="100%" height={250}>
               <PieChart>
                 <Pie
                   data={satuanData}
                   cx="50%"
                   cy="50%"
                   labelLine={false}
-                  label={({ name, percent }) => `${name}: ${(percent * 100).toFixed(0)}%`}
-                  outerRadius={80}
+                  label={({ name, percent }) => {
+                    // Truncate long names on mobile
+                    const shortName = name.length > 15 ? `${name.substring(0, 12)}...` : name;
+                    return `${shortName}: ${(percent * 100).toFixed(0)}%`;
+                  }}
+                  outerRadius={60}
                   fill="#8884d8"
                   dataKey="value"
+                  style={{ fontSize: 10 }}
                 >
                   {satuanData.map((_entry, index) => (
                     <Cell key={`cell-${index}`} fill={COLORS[index % COLORS.length]} />
                   ))}
                 </Pie>
-                <Tooltip />
+                <Tooltip contentStyle={{ fontSize: 12 }} />
               </PieChart>
             </ResponsiveContainer>
           </CardContent>
@@ -188,16 +193,16 @@ export function Dashboard() {
 
       <Card>
         <CardHeader>
-          <CardTitle>Tren Keluhan Kesehatan Bulanan</CardTitle>
+          <CardTitle className="text-base sm:text-lg">Tren Keluhan Kesehatan Bulanan</CardTitle>
         </CardHeader>
-        <CardContent>
-          <ResponsiveContainer width="100%" height={300}>
-            <LineChart data={keluhanData}>
+        <CardContent className="p-4 sm:p-6">
+          <ResponsiveContainer width="100%" height={250}>
+            <LineChart data={keluhanData} margin={{ top: 5, right: 10, left: 0, bottom: 5 }}>
               <CartesianGrid strokeDasharray="3 3" />
-              <XAxis dataKey="month" />
-              <YAxis />
-              <Tooltip />
-              <Legend />
+              <XAxis dataKey="month" tick={{ fontSize: 10 }} />
+              <YAxis tick={{ fontSize: 10 }} />
+              <Tooltip contentStyle={{ fontSize: 12 }} />
+              <Legend wrapperStyle={{ fontSize: 11 }} />
               <Line
                 type="monotone"
                 dataKey="count"

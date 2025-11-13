@@ -234,62 +234,62 @@ export function PendidikanPelatihanPage() {
   };
 
   return (
-    <div className="space-y-6">
+    <div className="space-y-4 sm:space-y-6">
       {/* Header */}
-      <div className="flex items-center justify-between">
+      <div className="flex flex-col sm:flex-row sm:items-center sm:justify-between gap-3">
         <div>
-          <h1 className="text-3xl font-bold text-gray-900">Pendidikan & Pelatihan</h1>
-          <p className="text-gray-600 mt-1">
+          <h1 className="text-2xl sm:text-3xl font-bold text-gray-900">Pendidikan & Pelatihan</h1>
+          <p className="text-sm sm:text-base text-gray-600 mt-1">
             Kelola data pelatihan tenaga kesehatan TNI AU
           </p>
         </div>
         {canCreate && (
-          <Button onClick={handleAdd} className="bg-blue-600 hover:bg-blue-700">
+          <Button onClick={handleAdd} className="bg-blue-600 hover:bg-blue-700 w-full sm:w-auto">
             <Plus className="w-4 h-4 mr-2" />
-            Tambah Pelatihan
+            <span className="sm:inline">Tambah Pelatihan</span>
           </Button>
         )}
       </div>
 
       {/* Statistics Cards */}
-      <div className="grid grid-cols-1 md:grid-cols-3 gap-4">
+      <div className="grid grid-cols-1 sm:grid-cols-3 gap-3 sm:gap-4">
         <Card>
-          <CardContent className="p-6">
+          <CardContent className="p-4 sm:p-6">
             <div className="flex items-center justify-between">
               <div>
-                <p className="text-sm text-gray-600">Total Pelatihan</p>
-                <p className="text-2xl font-bold text-gray-900 mt-1">{stats.total}</p>
+                <p className="text-xs sm:text-sm text-gray-600">Total Pelatihan</p>
+                <p className="text-xl sm:text-2xl font-bold text-gray-900 mt-1">{stats.total}</p>
               </div>
-              <div className="w-12 h-12 bg-blue-100 rounded-lg flex items-center justify-center">
-                <FileText className="w-6 h-6 text-blue-600" />
+              <div className="w-10 h-10 sm:w-12 sm:h-12 bg-blue-100 rounded-lg flex items-center justify-center">
+                <FileText className="w-5 h-5 sm:w-6 sm:h-6 text-blue-600" />
               </div>
             </div>
           </CardContent>
         </Card>
 
         <Card>
-          <CardContent className="p-6">
+          <CardContent className="p-4 sm:p-6">
             <div className="flex items-center justify-between">
               <div>
-                <p className="text-sm text-gray-600">Sudah Melaksanakan</p>
-                <p className="text-2xl font-bold text-green-600 mt-1">{stats.sudah}</p>
+                <p className="text-xs sm:text-sm text-gray-600">Sudah Melaksanakan</p>
+                <p className="text-xl sm:text-2xl font-bold text-green-600 mt-1">{stats.sudah}</p>
               </div>
-              <div className="w-12 h-12 bg-green-100 rounded-lg flex items-center justify-center">
-                <FileText className="w-6 h-6 text-green-600" />
+              <div className="w-10 h-10 sm:w-12 sm:h-12 bg-green-100 rounded-lg flex items-center justify-center">
+                <FileText className="w-5 h-5 sm:w-6 sm:h-6 text-green-600" />
               </div>
             </div>
           </CardContent>
         </Card>
 
         <Card>
-          <CardContent className="p-6">
+          <CardContent className="p-4 sm:p-6">
             <div className="flex items-center justify-between">
               <div>
-                <p className="text-sm text-gray-600">Belum Melaksanakan</p>
-                <p className="text-2xl font-bold text-gray-600 mt-1">{stats.belum}</p>
+                <p className="text-xs sm:text-sm text-gray-600">Belum Melaksanakan</p>
+                <p className="text-xl sm:text-2xl font-bold text-gray-600 mt-1">{stats.belum}</p>
               </div>
-              <div className="w-12 h-12 bg-gray-100 rounded-lg flex items-center justify-center">
-                <FileText className="w-6 h-6 text-gray-600" />
+              <div className="w-10 h-10 sm:w-12 sm:h-12 bg-gray-100 rounded-lg flex items-center justify-center">
+                <FileText className="w-5 h-5 sm:w-6 sm:h-6 text-gray-600" />
               </div>
             </div>
           </CardContent>
@@ -303,49 +303,57 @@ export function PendidikanPelatihanPage() {
         </CardHeader>
         <CardContent>
           {/* Search and Filter Bar */}
-          <div className="space-y-4 mb-6">
-            <div className="flex flex-col sm:flex-row gap-4">
-              <div className="flex-1 relative">
-                <Search className="absolute left-3 top-1/2 -translate-y-1/2 w-4 h-4 text-gray-400" />
-                <Input
-                  placeholder="Cari personel, NRP, atau jenis pelatihan..."
-                  value={searchQuery}
-                  onChange={(e) => setSearchQuery(e.target.value)}
-                  className="pl-10"
-                />
+          <div className="space-y-3 sm:space-y-4 mb-4 sm:mb-6">
+            <div className="flex flex-col gap-2 sm:gap-3">
+              <div className="flex gap-2">
+                <div className="flex-1 relative">
+                  <Search className="absolute left-3 top-1/2 -translate-y-1/2 w-4 h-4 text-gray-400" />
+                  <Input
+                    placeholder="Cari personel, NRP, atau jenis pelatihan..."
+                    value={searchQuery}
+                    onChange={(e) => setSearchQuery(e.target.value)}
+                    className="pl-10"
+                  />
+                </div>
+                <Button
+                  variant="outline"
+                  onClick={() => setShowFilters(!showFilters)}
+                  className="shrink-0"
+                >
+                  <Filter className="w-4 h-4 sm:mr-2" />
+                  <span className="hidden sm:inline">Filter</span>
+                </Button>
               </div>
-              <Button
-                variant="outline"
-                onClick={() => setShowFilters(!showFilters)}
-                className="w-full sm:w-auto"
-              >
-                <Filter className="w-4 h-4 mr-2" />
-                Filter
-              </Button>
               {canExport && (
-                <div className="flex gap-2">
+                <div className="flex gap-2 overflow-x-auto pb-1">
                   <Button
                     variant="outline"
                     onClick={exportToCSV}
                     title="Export ke CSV"
+                    size="sm"
+                    className="shrink-0"
                   >
-                    <Download className="w-4 h-4 mr-2" />
+                    <Download className="w-4 h-4 mr-1 sm:mr-2" />
                     CSV
                   </Button>
                   <Button
                     variant="outline"
                     onClick={exportToExcel}
                     title="Export ke Excel"
+                    size="sm"
+                    className="shrink-0"
                   >
-                    <FileSpreadsheet className="w-4 h-4 mr-2" />
+                    <FileSpreadsheet className="w-4 h-4 mr-1 sm:mr-2" />
                     Excel
                   </Button>
                   <Button
                     variant="outline"
                     onClick={exportToPDF}
                     title="Export ke PDF"
+                    size="sm"
+                    className="shrink-0"
                   >
-                    <FileText className="w-4 h-4 mr-2" />
+                    <FileText className="w-4 h-4 mr-1 sm:mr-2" />
                     PDF
                   </Button>
                 </div>
@@ -388,8 +396,8 @@ export function PendidikanPelatihanPage() {
             )}
           </div>
 
-          {/* Data Table */}
-          <div className="rounded-md border overflow-hidden">
+          {/* Data Table - Desktop */}
+          <div className="hidden md:block rounded-md border overflow-hidden">
             <div className="overflow-x-auto">
               <table className="w-full">
                 <thead className="bg-gray-50 border-b">
@@ -485,6 +493,88 @@ export function PendidikanPelatihanPage() {
                 </tbody>
               </table>
             </div>
+          </div>
+
+          {/* Data Cards - Mobile */}
+          <div className="md:hidden space-y-3">
+            {filteredData.length === 0 ? (
+              <div className="text-center py-8 text-gray-500">
+                Tidak ada data pelatihan
+              </div>
+            ) : (
+              filteredData.map((p) => (
+                <Card key={p.id} className="overflow-hidden">
+                  <CardContent className="p-4">
+                    <div className="space-y-3">
+                      <div className="flex items-start justify-between">
+                        <div className="flex-1 min-w-0">
+                          <h3 className="font-medium text-gray-900 truncate">{p.personelNama}</h3>
+                          <p className="text-sm text-gray-500">{p.personelNRP}</p>
+                        </div>
+                        <Badge
+                          variant={p.statusPelaksanaan === 'Sudah Melaksanakan' ? 'success' : 'secondary'}
+                          className="ml-2 shrink-0"
+                        >
+                          {p.statusPelaksanaan === 'Sudah Melaksanakan' ? '✅' : '⚪'}
+                        </Badge>
+                      </div>
+                      
+                      <div className="space-y-1 text-sm">
+                        <div className="flex justify-between">
+                          <span className="text-gray-500">Jenis:</span>
+                          <span className="font-medium text-gray-900">{p.jenis}</span>
+                        </div>
+                        <div className="flex justify-between">
+                          <span className="text-gray-500">Mulai:</span>
+                          <span className="text-gray-900">
+                            {p.tanggalMulai ? format(new Date(p.tanggalMulai), 'dd MMM yyyy') : '-'}
+                          </span>
+                        </div>
+                        <div className="flex justify-between">
+                          <span className="text-gray-500">Selesai:</span>
+                          <span className="text-gray-900">
+                            {p.tanggalSelesai ? format(new Date(p.tanggalSelesai), 'dd MMM yyyy') : '-'}
+                          </span>
+                        </div>
+                        <div className="flex justify-between">
+                          <span className="text-gray-500">Berlaku:</span>
+                          <span className="text-gray-900">
+                            {p.sertifikatBerlakuHingga ? format(new Date(p.sertifikatBerlakuHingga), 'dd MMM yyyy') : '-'}
+                          </span>
+                        </div>
+                      </div>
+
+                      {(canEdit || canDelete) && (
+                        <div className="flex items-center gap-2 pt-2 border-t">
+                          {canEdit && (
+                            <Button
+                              size="sm"
+                              variant="outline"
+                              onClick={() => handleEdit(p)}
+                              className="flex-1"
+                            >
+                              <Edit className="w-4 h-4 mr-1" />
+                              Edit
+                            </Button>
+                          )}
+                          {canDelete && (
+                            <Button
+                              size="sm"
+                              variant="outline"
+                              onClick={() => handleDeleteClick(p.id)}
+                              className="flex-1 text-red-600 hover:text-red-700 hover:bg-red-50"
+                            >
+                              <Trash2 className="w-4 h-4 mr-1" />
+                              Hapus
+                            </Button>
+                          )}
+                        </div>
+                      )}
+                    </div>
+                  </CardContent>
+                </Card>
+              ))
+            )}
           </div>
 
           {/* Results info */}
