@@ -1,9 +1,12 @@
-import { useState, useMemo } from 'react';
-import { MapContainer, TileLayer, Marker, Popup } from 'react-leaflet';
+import { useState, useMemo, useEffect } from 'react';
+import { MapContainer, TileLayer, Marker, Popup, useMap } from 'react-leaflet';
 import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card';
 import { Badge } from '@/components/ui/badge';
+import { Button } from '@/components/ui/button';
+import { Input } from '@/components/ui/input';
 import { Fasilitas, JenisFasilitas } from '@/types/models';
 import { Repository } from '@/services/repository';
+import { createCustomIcon } from '@/utils/mapIcons';
 import 'leaflet/dist/leaflet.css';
 import L from 'leaflet';
 
@@ -22,20 +25,55 @@ L.Marker.prototype.options.icon = DefaultIcon;
 
 const fasilitasRepo = new Repository<Fasilitas>('fasilitas', 'Fasilitas');
 
+function MapController({
+  fasilitas,
+  selectedFacilityId,
+  recenterKey,
+}: {
+  fasilitas: Fasilitas[];
+  selectedFacilityId: string | null;
+  recenterKey: number;
+}) {
+  const map = useMap();
+
+  useEffect(() => {
+    if (!fasilitas.length) return;
+    const bounds = L.latLngBounds(
+      fasilitas.map((f) => [f.koordinat.lat, f.koordinat.lng])
+    );
+    map.fitBounds(bounds, { padding: [40, 40], maxZoom: 10 });
+  }, [fasilitas, map, recenterKey]);
+
+  useEffect(() => {
+    if (!selectedFacilityId) return;
+    const facility = fasilitas.find((f) => f.id === selectedFacilityId);
+    if (facility) {
+      map.flyTo([facility.koordinat.lat, facility.koordinat.lng], 11, {
+        duration: 0.6,
+      });
+    }
+  }, [selectedFacilityId, fasilitas, map]);
+
+  return null;
+}
+
 export function PetaPage() {
   const [fasilitas] = useState<Fasilitas[]>(fasilitasRepo.getAll());
   const [filterJenis, setFilterJenis] = useState<JenisFasilitas | ''>('');
+  const [search, setSearch] = useState('');
+  const [selectedFacilityId, setSelectedFacilityId] = useState<string | null>(null);
+  const [recenterKey, setRecenterKey] = useState(0);
 
   const filteredFasilitas = useMemo(() => {
-    return fasilitas.filter(f => !filterJenis || f.jenis === filterJenis);
-  }, [fasilitas, filterJenis]);
-
-  const center = useMemo(() => {
-    if (filteredFasilitas.length === 0) return { lat: -2.5, lng: 118 };
-    const avgLat = filteredFasilitas.reduce((sum, f) => sum + f.koordinat.lat, 0) / filteredFasilitas.length;
-    const avgLng = filteredFasilitas.reduce((sum, f) => sum + f.koordinat.lng, 0) / filteredFasilitas.length;
-    return { lat: avgLat, lng: avgLng };
-  }, [filteredFasilitas]);
+    const searchLower = search.toLowerCase();
+    return fasilitas.filter(f => {
+      const matchesJenis = !filterJenis || f.jenis === filterJenis;
+      const matchesSearch =
+        f.nama.toLowerCase().includes(searchLower) ||
+        f.komando.toLowerCase().includes(searchLower);
+      return matchesJenis && matchesSearch;
+    });
+  }, [fasilitas, filterJenis, search]);
 
   return (
     <div className="space-y-6">
@@ -46,11 +84,16 @@ export function PetaPage() {
         </p>
       </div>
 
-      <div className="flex gap-4">
+      <div className="grid gap-3 lg:grid-cols-[1fr_auto_auto] lg:items-center">
+        <Input
+          placeholder="Cari fasilitas atau komando..."
+          value={search}
+          onChange={(e) => setSearch(e.target.value)}
+        />
         <select
           value={filterJenis}
           onChange={(e) => setFilterJenis(e.target.value as JenisFasilitas | '')}
-          className="rounded-md border border-input bg-background px-3 py-2 text-sm"
+          className="rounded-md border border-input bg-background px-3 py-2 text-sm w-full lg:w-auto"
         >
           <option value="">Semua Jenis</option>
           <option value="Lanud">Lanud</option>
@@ -59,6 +102,15 @@ export function PetaPage() {
           <option value="Koopsau">Koopsau</option>
           <option value="Satrad">Satrad</option>
         </select>
+        <Button
+          variant="outline"
+          onClick={() => {
+            setSelectedFacilityId(null);
+            setRecenterKey((prev) => prev + 1);
+          }}
+        >
+          Reset Tampilan
+        </Button>
       </div>
 
       <Card>
@@ -66,9 +118,9 @@ export function PetaPage() {
           <CardTitle>Peta Interaktif</CardTitle>
         </CardHeader>
         <CardContent>
-          <div className="h-[600px] rounded-lg overflow-hidden">
+          <div className="relative h-[420px] sm:h-[520px] lg:h-[600px] rounded-lg overflow-hidden">
             <MapContainer
-              center={[center.lat, center.lng]}
+              center={[-2.5, 118]}
               zoom={5}
               style={{ height: '100%', width: '100%' }}
             >
@@ -76,10 +128,19 @@ export function PetaPage() {
                 attribution='&copy; <a href="https://www.openstreetmap.org/copyright">OpenStreetMap</a> contributors'
                 url="https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png"
               />
+              <MapController
+                fasilitas={filteredFasilitas}
+                selectedFacilityId={selectedFacilityId}
+                recenterKey={recenterKey}
+              />
               {filteredFasilitas.map((f) => (
                 <Marker
                   key={f.id}
                   position={[f.koordinat.lat, f.koordinat.lng]}
+                  icon={createCustomIcon(f.jenis, f.id === selectedFacilityId)}
+                  eventHandlers={{
+                    click: () => setSelectedFacilityId(f.id),
+                  }}
                 >
                   <Popup>
                     <div className="p-2">
@@ -102,13 +163,19 @@ export function PetaPage() {
                 </Marker>
               ))}
             </MapContainer>
+            <div className="absolute bottom-4 right-4 z-[400] rounded-md bg-white/90 shadow-sm border px-3 py-2 text-xs">
+              {filteredFasilitas.length} fasilitas ditampilkan
+            </div>
           </div>
         </CardContent>
       </Card>
 
       <div className="grid gap-4 md:grid-cols-2 lg:grid-cols-3">
         {filteredFasilitas.map((f) => (
-          <Card key={f.id}>
+          <Card
+            key={f.id}
+            className={selectedFacilityId === f.id ? 'border-primary shadow-sm' : undefined}
+          >
             <CardHeader>
               <CardTitle className="text-base">{f.nama}</CardTitle>
               <div className="flex gap-2">
@@ -138,6 +205,14 @@ export function PetaPage() {
                   <span className="text-muted-foreground">Spesialis:</span>
                   <span className="font-medium">{f.ringkasan.spesialis}</span>
                 </div>
+                <Button
+                  variant="outline"
+                  size="sm"
+                  className="w-full mt-3"
+                  onClick={() => setSelectedFacilityId(f.id)}
+                >
+                  Fokus ke Peta
+                </Button>
               </div>
             </CardContent>
           </Card>

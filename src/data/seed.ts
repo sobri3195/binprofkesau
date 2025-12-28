@@ -61,6 +61,15 @@ const personel: Personel[] = [
     status: 'Aktif',
     jabatan: 'Kepala Klinik',
     pekerjaan: 'Dokter',
+    kontak: {
+      telepon: '0812-3456-7890',
+      email: 'ahmad.yani@binprofkes.mil.id',
+      alamat: 'Jl. Merdeka No. 12, Jakarta',
+    },
+    riwayatDinas: [
+      { satuan: 'RSAU dr. Esnawan Antariksa', jabatan: 'Dokter Umum', periode: '2019-2021' },
+      { satuan: 'Lanud Halim Perdanakusuma', jabatan: 'Kepala Klinik', periode: '2021-Sekarang' },
+    ],
     keluhanBulanan: [
       { month: '2024-01', count: 45 },
       { month: '2024-02', count: 52 },
@@ -79,6 +88,15 @@ const personel: Personel[] = [
     status: 'Aktif',
     jabatan: 'Dokter Gigi',
     pekerjaan: 'Dokter Gigi',
+    kontak: {
+      telepon: '0813-5566-7788',
+      email: 'siti.nurhaliza@binprofkes.mil.id',
+      alamat: 'Jl. Cendrawasih No. 8, Jakarta',
+    },
+    riwayatDinas: [
+      { satuan: 'Lanud Halim Perdanakusuma', jabatan: 'Dokter Gigi', periode: '2018-2020' },
+      { satuan: 'RSAU dr. Esnawan Antariksa', jabatan: 'Dokter Gigi', periode: '2020-Sekarang' },
+    ],
     keluhanBulanan: [
       { month: '2024-01', count: 30 },
       { month: '2024-02', count: 35 },
@@ -97,6 +115,15 @@ const personel: Personel[] = [
     status: 'Aktif',
     jabatan: 'Perawat',
     pekerjaan: 'Perawat',
+    kontak: {
+      telepon: '0812-7788-9900',
+      email: 'budi.santoso@binprofkes.mil.id',
+      alamat: 'Jl. Angkasa No. 5, Makassar',
+    },
+    riwayatDinas: [
+      { satuan: 'Lanud Sam Ratulangi', jabatan: 'Perawat', periode: '2017-2020' },
+      { satuan: 'Lanud Sultan Hasanuddin', jabatan: 'Perawat', periode: '2020-Sekarang' },
+    ],
     keluhanBulanan: [
       { month: '2024-01', count: 60 },
       { month: '2024-02', count: 65 },
@@ -115,6 +142,15 @@ const personel: Personel[] = [
     status: 'Aktif',
     jabatan: 'Spesialis Penyakit Dalam',
     pekerjaan: 'Spesialis',
+    kontak: {
+      telepon: '0812-3344-5566',
+      email: 'andi.wijaya@binprofkes.mil.id',
+      alamat: 'Jl. Anggrek No. 15, Jakarta',
+    },
+    riwayatDinas: [
+      { satuan: 'Lanud Halim Perdanakusuma', jabatan: 'Dokter Umum', periode: '2016-2019' },
+      { satuan: 'RSAU dr. Esnawan Antariksa', jabatan: 'Spesialis Penyakit Dalam', periode: '2019-Sekarang' },
+    ],
     keluhanBulanan: [
       { month: '2024-01', count: 40 },
       { month: '2024-02', count: 38 },
@@ -133,6 +169,15 @@ const personel: Personel[] = [
     status: 'Aktif',
     jabatan: 'Asisten Perawat',
     pekerjaan: 'Perawat',
+    kontak: {
+      telepon: '0812-2233-4455',
+      email: 'dewi.lestari@binprofkes.mil.id',
+      alamat: 'Jl. Iswahyudi No. 10, Madiun',
+    },
+    riwayatDinas: [
+      { satuan: 'Lanud Abdulrachman Saleh', jabatan: 'Perawat', periode: '2019-2021' },
+      { satuan: 'Lanud Iswahyudi', jabatan: 'Asisten Perawat', periode: '2021-Sekarang' },
+    ],
     keluhanBulanan: [
       { month: '2024-01', count: 55 },
       { month: '2024-02', count: 50 },
@@ -151,6 +196,15 @@ const personel: Personel[] = [
     status: 'Dinas Belajar',
     jabatan: 'Dokter Umum',
     pekerjaan: 'Dokter',
+    kontak: {
+      telepon: '0812-6677-8899',
+      email: 'bambang.setiawan@binprofkes.mil.id',
+      alamat: 'Jl. Pendidikan No. 3, Jakarta',
+    },
+    riwayatDinas: [
+      { satuan: 'Lanud Halim Perdanakusuma', jabatan: 'Dokter Umum', periode: '2018-2022' },
+      { satuan: 'FK Universitas Airlangga', jabatan: 'PPDS', periode: '2022-Sekarang' },
+    ],
     keluhanBulanan: [
       { month: '2024-01', count: 20 },
       { month: '2024-02', count: 15 },
@@ -169,6 +223,15 @@ const personel: Personel[] = [
     status: 'Aktif',
     jabatan: 'Kepala Perawat',
     pekerjaan: 'Perawat',
+    kontak: {
+      telepon: '0812-9988-7766',
+      email: 'ratna.sari@binprofkes.mil.id',
+      alamat: 'Jl. Sukarno No. 21, Malang',
+    },
+    riwayatDinas: [
+      { satuan: 'Lanud Iswahyudi', jabatan: 'Perawat', periode: '2015-2018' },
+      { satuan: 'Lanud Abdulrachman Saleh', jabatan: 'Kepala Perawat', periode: '2018-Sekarang' },
+    ],
     keluhanBulanan: [
       { month: '2024-01', count: 48 },
       { month: '2024-02', count: 52 },
@@ -187,6 +250,15 @@ const personel: Personel[] = [
     status: 'Aktif',
     jabatan: 'Dokter Gigi Senior',
     pekerjaan: 'Dokter Gigi',
+    kontak: {
+      telepon: '0812-5544-3322',
+      email: 'kartika.putri@binprofkes.mil.id',
+      alamat: 'Jl. Supadio No. 7, Pontianak',
+    },
+    riwayatDinas: [
+      { satuan: 'RSAU dr. Esnawan Antariksa', jabatan: 'Dokter Gigi', periode: '2017-2020' },
+      { satuan: 'Lanud Supadio', jabatan: 'Dokter Gigi Senior', periode: '2020-Sekarang' },
+    ],
     keluhanBulanan: [
       { month: '2024-01', count: 28 },
       { month: '2024-02', count: 30 },
@@ -205,6 +277,15 @@ const personel: Personel[] = [
     status: 'Aktif',
     jabatan: 'Spesialis Anak',
     pekerjaan: 'Spesialis',
+    kontak: {
+      telepon: '0812-1111-2233',
+      email: 'hendra.gunawan@binprofkes.mil.id',
+      alamat: 'Jl. Garuda No. 2, Jakarta',
+    },
+    riwayatDinas: [
+      { satuan: 'Lanud Halim Perdanakusuma', jabatan: 'Dokter Umum', periode: '2016-2019' },
+      { satuan: 'RSAU dr. Esnawan Antariksa', jabatan: 'Spesialis Anak', periode: '2019-Sekarang' },
+    ],
     keluhanBulanan: [
       { month: '2024-01', count: 35 },
       { month: '2024-02', count: 38 },
@@ -223,6 +304,15 @@ const personel: Personel[] = [
     status: 'Aktif',
     jabatan: 'Perawat',
     pekerjaan: 'Perawat',
+    kontak: {
+      telepon: '0812-9090-1212',
+      email: 'eko.prasetyo@binprofkes.mil.id',
+      alamat: 'Jl. Ratulangi No. 9, Manado',
+    },
+    riwayatDinas: [
+      { satuan: 'Lanud Supadio', jabatan: 'Perawat', periode: '2019-2022' },
+      { satuan: 'Lanud Sam Ratulangi', jabatan: 'Perawat', periode: '2022-Sekarang' },
+    ],
     keluhanBulanan: [
       { month: '2024-01', count: 42 },
       { month: '2024-02', count: 45 },
