@@ -55,10 +55,10 @@ export function PetaSebaranPage() {
   };
 
   return (
-    <div className="h-[calc(100vh-4rem)] flex">
+    <div className="min-h-[calc(100vh-4rem)] flex flex-col lg:flex-row">
       {/* Sidebar */}
       {uiPreferences.sidebarOpen && (
-        <div className="w-[380px] flex-shrink-0">
+        <div className="w-full lg:w-[380px] flex-shrink-0 border-b lg:border-b-0 lg:border-r">
           <MapSidebar
             filters={filters}
             uiPreferences={uiPreferences}
@@ -76,7 +76,7 @@ export function PetaSebaranPage() {
       <div className="flex-1 flex flex-col">
         {/* Map View */}
         {(uiPreferences.viewMode === 'map' || uiPreferences.viewMode === 'both') && (
-          <div className={uiPreferences.viewMode === 'both' ? 'flex-1' : 'h-full'}>
+          <div className={uiPreferences.viewMode === 'both' ? 'flex-1 min-h-[320px]' : 'flex-1 min-h-[360px]'}>
             <MapView
               fasilitas={filteredFasilitas}
               highlightedIds={highlightedFacilityIds}
@@ -90,11 +90,11 @@ export function PetaSebaranPage() {
         {/* List View */}
         {(uiPreferences.viewMode === 'list' || uiPreferences.viewMode === 'both') && (
           <div className={`${
-            uiPreferences.viewMode === 'both' ? 'h-[300px]' : 'flex-1'
+            uiPreferences.viewMode === 'both' ? 'max-h-[360px]' : 'flex-1'
           } overflow-y-auto border-t`}>
             <div className="p-4">
               <h3 className="text-lg font-bold mb-4">Daftar Fasilitas</h3>
-              <div className="overflow-x-auto">
+              <div className="hidden md:block overflow-x-auto">
                 <table className="w-full border-collapse">
                   <thead>
                     <tr className="bg-gray-100 border-b">
@@ -136,6 +136,34 @@ export function PetaSebaranPage() {
                 </table>
               </div>
 
+              <div className="md:hidden space-y-3">
+                {filteredFasilitas.map((f) => (
+                  <div key={f.id} className="border rounded-lg p-3 space-y-2">
+                    <div>
+                      <p className="font-semibold">{f.nama}</p>
+                      <div className="flex gap-2 mt-1">
+                        <span className="inline-block px-2 py-1 text-xs rounded bg-blue-100 text-blue-800">
+                          {f.jenis}
+                        </span>
+                        <span className="inline-block px-2 py-1 text-xs rounded bg-gray-100 text-gray-800">
+                          {f.komando}
+                        </span>
+                      </div>
+                    </div>
+                    <div className="flex justify-between text-sm text-muted-foreground">
+                      <span>Dokter: {f.dokterList?.length || 0}</span>
+                      <span>Perawat: {f.ringkasan.perawat}</span>
+                    </div>
+                    <button
+                      onClick={() => handleFacilityFocus(f.id)}
+                      className="text-xs text-blue-600 hover:text-blue-800 font-semibold"
+                    >
+                      Focus
+                    </button>
+                  </div>
+                ))}
+              </div>
+
               {filteredFasilitas.length === 0 && (
                 <div className="text-center py-8 text-muted-foreground">
                   <p>Tidak ada fasilitas yang sesuai dengan filter</p>
@@ -149,11 +177,9 @@ export function PetaSebaranPage() {
       {/* Toggle Sidebar Button */}
       <button
         onClick={() => setUIPreferences({ sidebarOpen: !uiPreferences.sidebarOpen })}
-        className="fixed left-0 top-1/2 transform -translate-y-1/2 bg-white border border-l-0 rounded-r-md p-2 shadow-md hover:bg-gray-50 z-[1000]"
-        style={{ 
-          left: uiPreferences.sidebarOpen ? '380px' : '0',
-          transition: 'left 0.3s ease'
-        }}
+        className={`fixed left-0 top-1/2 transform -translate-y-1/2 bg-white border border-l-0 rounded-r-md p-2 shadow-md hover:bg-gray-50 z-[1000] transition-all ${
+          uiPreferences.sidebarOpen ? 'lg:left-[380px]' : 'left-0'
+        }`}
       >
         <svg
           className="w-4 h-4"

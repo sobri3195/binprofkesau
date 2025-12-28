@@ -29,6 +29,16 @@ export interface Personel {
   status: string;
   jabatan: string;
   pekerjaan: string;
+  kontak: {
+    telepon: string;
+    email: string;
+    alamat?: string;
+  };
+  riwayatDinas: Array<{
+    satuan: string;
+    jabatan: string;
+    periode: string;
+  }>;
   keluhanBulanan?: Array<{ month: string; count: number }>;
   createdAt: string;
   updatedAt: string;

@@ -22,10 +22,13 @@ export function PersonelPage() {
   const canDelete = user?.role === 'SuperAdmin' || user?.role === 'AdminSatuan';
 
   const filteredPersonel = useMemo(() => {
+    const searchLower = search.toLowerCase();
     return personel.filter(p => {
       const matchesSearch = 
-        p.nama.toLowerCase().includes(search.toLowerCase()) ||
-        p.nrp.includes(search);
+        p.nama.toLowerCase().includes(searchLower) ||
+        p.nrp.includes(searchLower) ||
+        p.kontak.telepon.includes(searchLower) ||
+        p.kontak.email.toLowerCase().includes(searchLower);
       const matchesPangkat = !filterPangkat || p.pangkat === filterPangkat;
       const matchesSatuan = user?.role === 'AdminSatuan' 
         ? p.satuan === user.satuan 
@@ -34,6 +37,29 @@ export function PersonelPage() {
       return matchesSearch && matchesPangkat && matchesSatuan;
     });
   }, [personel, search, filterPangkat, user]);
+
+  const getLatestRiwayat = (p: Personel) => p.riwayatDinas[p.riwayatDinas.length - 1];
+
+  const exportData = useMemo(() => {
+    return filteredPersonel.map((p) => {
+      const latestRiwayat = getLatestRiwayat(p);
+      return {
+        nrp: p.nrp,
+        nama: p.nama,
+        pangkat: p.pangkat,
+        korps: p.korps,
+        satuan: p.satuan,
+        jabatan: p.jabatan,
+        pekerjaan: p.pekerjaan,
+        status: p.status,
+        telepon: p.kontak.telepon,
+        email: p.kontak.email,
+        riwayatDinasTerakhir: latestRiwayat
+          ? `${latestRiwayat.satuan} - ${latestRiwayat.jabatan} (${latestRiwayat.periode})`
+          : '-',
+      };
+    });
+  }, [filteredPersonel]);
 
   const handleDelete = (id: string) => {
     if (confirm('Apakah Anda yakin ingin menghapus data personel ini?')) {
@@ -44,23 +70,47 @@ export function PersonelPage() {
 
   const handleExportCSV = () => {
     ExportService.exportToCSV(
-      filteredPersonel,
+      exportData,
       'personel-binprofkes',
-      ['nrp', 'nama', 'pangkat', 'korps', 'satuan', 'jabatan', 'pekerjaan', 'status']
+      [
+        'nrp',
+        'nama',
+        'pangkat',
+        'korps',
+        'satuan',
+        'jabatan',
+        'pekerjaan',
+        'status',
+        'telepon',
+        'email',
+        'riwayatDinasTerakhir',
+      ]
     );
   };
 
   const handleExportExcel = () => {
     ExportService.exportToExcel(
-      filteredPersonel,
+      exportData,
       'personel-binprofkes',
-      ['nrp', 'nama', 'pangkat', 'korps', 'satuan', 'jabatan', 'pekerjaan', 'status']
+      [
+        'nrp',
+        'nama',
+        'pangkat',
+        'korps',
+        'satuan',
+        'jabatan',
+        'pekerjaan',
+        'status',
+        'telepon',
+        'email',
+        'riwayatDinasTerakhir',
+      ]
     );
   };
 
   const handleExportPDF = () => {
     ExportService.exportToPDF(
-      filteredPersonel,
+      exportData,
       'Personel BINPROFKES',
       [
         { header: 'NRP', dataKey: 'nrp' },
@@ -71,13 +121,16 @@ export function PersonelPage() {
         { header: 'Jabatan', dataKey: 'jabatan' },
         { header: 'Pekerjaan', dataKey: 'pekerjaan' },
         { header: 'Status', dataKey: 'status' },
+        { header: 'Telepon', dataKey: 'telepon' },
+        { header: 'Email', dataKey: 'email' },
+        { header: 'Riwayat Dinas Terakhir', dataKey: 'riwayatDinasTerakhir' },
       ]
     );
   };
 
   return (
     <div className="space-y-4 sm:space-y-6">
-      <div className="flex flex-col sm:flex-row sm:items-center sm:justify-between gap-3">
+      <div className="flex flex-col lg:flex-row lg:items-center lg:justify-between gap-3">
         <div>
           <h1 className="text-2xl sm:text-3xl font-bold">Personel</h1>
           <p className="text-sm sm:text-base text-muted-foreground">
@@ -85,7 +138,7 @@ export function PersonelPage() {
           </p>
         </div>
         {canCreate && (
-          <Button className="w-full sm:w-auto">
+          <Button className="w-full lg:w-auto">
             <Plus className="mr-2 h-4 w-4" />
             Tambah Personel
           </Button>
@@ -98,12 +151,12 @@ export function PersonelPage() {
         </CardHeader>
         <CardContent>
           <div className="mb-4 space-y-3">
-            <div className="flex flex-col sm:flex-row gap-2 sm:gap-4">
+            <div className="flex flex-col lg:flex-row gap-2 lg:gap-4">
               <div className="flex-1">
                 <div className="relative">
                   <Search className="absolute left-2 top-2.5 h-4 w-4 text-muted-foreground" />
                   <Input
-                    placeholder="Cari nama atau NRP..."
+                    placeholder="Cari nama, NRP, telepon, atau email..."
                     value={search}
                     onChange={(e) => setSearch(e.target.value)}
                     className="pl-8"
@@ -114,7 +167,7 @@ export function PersonelPage() {
               <select
                 value={filterPangkat}
                 onChange={(e) => setFilterPangkat(e.target.value as Pangkat | '')}
-                className="rounded-md border border-input bg-background px-3 py-2 text-sm w-full sm:w-auto"
+                className="rounded-md border border-input bg-background px-3 py-2 text-sm w-full lg:w-auto"
               >
                 <option value="">Semua Pangkat</option>
                 <option value="Tamtama">Tamtama</option>
@@ -123,7 +176,7 @@ export function PersonelPage() {
               </select>
             </div>
 
-            <div className="flex gap-2 overflow-x-auto pb-1">
+            <div className="flex flex-wrap gap-2">
               <Button variant="outline" size="sm" onClick={handleExportCSV} className="shrink-0">
                 <Download className="mr-1 sm:mr-2 h-4 w-4" />
                 CSV
@@ -140,7 +193,7 @@ export function PersonelPage() {
           </div>
 
           {/* Desktop Table */}
-          <div className="hidden md:block rounded-md border">
+          <div className="hidden lg:block rounded-md border">
             <div className="overflow-x-auto">
               <table className="w-full">
                 <thead className="bg-muted/50">
@@ -152,6 +205,8 @@ export function PersonelPage() {
                     <th className="px-4 py-3 text-left text-sm font-medium">Satuan</th>
                     <th className="px-4 py-3 text-left text-sm font-medium">Jabatan</th>
                     <th className="px-4 py-3 text-left text-sm font-medium">Pekerjaan</th>
+                    <th className="px-4 py-3 text-left text-sm font-medium">Kontak</th>
+                    <th className="px-4 py-3 text-left text-sm font-medium">Riwayat Dinas Terakhir</th>
                     <th className="px-4 py-3 text-left text-sm font-medium">Status</th>
                     {(canEdit || canDelete) && (
                       <th className="px-4 py-3 text-right text-sm font-medium">Aksi</th>
@@ -161,12 +216,14 @@ export function PersonelPage() {
                 <tbody className="divide-y">
                   {filteredPersonel.length === 0 ? (
                     <tr>
-                      <td colSpan={9} className="px-4 py-8 text-center text-sm text-muted-foreground">
+                      <td colSpan={11} className="px-4 py-8 text-center text-sm text-muted-foreground">
                         Tidak ada data personel
                       </td>
                     </tr>
                   ) : (
-                    filteredPersonel.map((p) => (
+                    filteredPersonel.map((p) => {
+                      const latestRiwayat = getLatestRiwayat(p);
+                      return (
                       <tr key={p.id} className="hover:bg-muted/50">
                         <td className="px-4 py-3 text-sm">{p.nrp}</td>
                         <td className="px-4 py-3 text-sm font-medium">{p.nama}</td>
@@ -183,6 +240,23 @@ export function PersonelPage() {
                         <td className="px-4 py-3 text-sm">{p.satuan}</td>
                         <td className="px-4 py-3 text-sm">{p.jabatan}</td>
                         <td className="px-4 py-3 text-sm">{p.pekerjaan}</td>
+                        <td className="px-4 py-3 text-sm">
+                          <div className="text-xs text-muted-foreground">Telp</div>
+                          <div className="font-medium">{p.kontak.telepon}</div>
+                          <div className="text-xs text-muted-foreground mt-2">Email</div>
+                          <div className="font-medium">{p.kontak.email}</div>
+                        </td>
+                        <td className="px-4 py-3 text-sm">
+                          {latestRiwayat ? (
+                            <div>
+                              <div className="font-medium">{latestRiwayat.satuan}</div>
+                              <div className="text-xs text-muted-foreground">{latestRiwayat.jabatan}</div>
+                              <div className="text-xs text-muted-foreground">{latestRiwayat.periode}</div>
+                            </div>
+                          ) : (
+                            <span className="text-muted-foreground">-</span>
+                          )}
+                        </td>
                         <td className="px-4 py-3 text-sm">
                           <Badge variant={p.status === 'Aktif' ? 'success' : 'warning'}>
                             {p.status}
@@ -209,7 +283,8 @@ export function PersonelPage() {
                           </td>
                         )}
                       </tr>
-                    ))
+                      );
+                    })
                   )}
                 </tbody>
               </table>
@@ -217,7 +292,7 @@ export function PersonelPage() {
           </div>
 
           {/* Mobile Cards */}
-          <div className="md:hidden space-y-3">
+          <div className="lg:hidden space-y-3">
             {filteredPersonel.length === 0 ? (
               <div className="text-center py-8 text-sm text-muted-foreground">
                 Tidak ada data personel
@@ -265,6 +340,25 @@ export function PersonelPage() {
                         <div className="col-span-2">
                           <span className="text-gray-500">Pekerjaan:</span>
                           <p className="font-medium text-gray-900 mt-1">{p.pekerjaan}</p>
+                        </div>
+                        <div className="col-span-2">
+                          <span className="text-gray-500">Kontak:</span>
+                          <div className="mt-1 space-y-1">
+                            <p className="font-medium text-gray-900">{p.kontak.telepon}</p>
+                            <p className="text-sm text-gray-500">{p.kontak.email}</p>
+                          </div>
+                        </div>
+                        <div className="col-span-2">
+                          <span className="text-gray-500">Riwayat Dinas:</span>
+                          <div className="mt-1 space-y-1 text-sm text-gray-700">
+                            {p.riwayatDinas.slice(-2).map((riwayat) => (
+                              <div key={`${riwayat.satuan}-${riwayat.periode}`} className="rounded-md border px-2 py-1">
+                                <p className="font-medium">{riwayat.satuan}</p>
+                                <p className="text-xs text-gray-500">{riwayat.jabatan}</p>
+                                <p className="text-xs text-gray-500">{riwayat.periode}</p>
+                              </div>
+                            ))}
+                          </div>
                         </div>
                       </div>
 

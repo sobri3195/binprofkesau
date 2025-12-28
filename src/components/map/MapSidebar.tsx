@@ -206,7 +206,12 @@ export function MapSidebar({
                 placeholder="Tambah spesialisasi..."
                 value={spesialisasiInput}
                 onChange={(e) => setSpesialisasiInput(e.target.value)}
-                onKeyPress={(e) => e.key === 'Enter' && addSpesialisasi()}
+                onKeyDown={(e) => {
+                  if (e.key === 'Enter') {
+                    e.preventDefault();
+                    addSpesialisasi();
+                  }
+                }}
                 className="flex-1 text-sm"
                 list="spesialisasi-options"
               />
