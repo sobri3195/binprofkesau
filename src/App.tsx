@@ -51,22 +51,8 @@ function App() {
           <Route path="peta" element={<PetaPage />} />
           <Route path="peta-sebaran" element={<PetaSebaranPage />} />
           <Route path="notifikasi" element={<NotifikasiPage />} />
-          <Route
-            path="log"
-            element={
-              <ProtectedRoute allowedRoles={['SuperAdmin', 'AdminSatuan']}>
-                <LogAktivitasPage />
-              </ProtectedRoute>
-            }
-          />
-          <Route
-            path="users"
-            element={
-              <ProtectedRoute allowedRoles={['SuperAdmin']}>
-                <UsersPage />
-              </ProtectedRoute>
-            }
-          />
+          <Route path="log" element={<LogAktivitasPage />} />
+          <Route path="users" element={<UsersPage />} />
         </Route>
         <Route path="/" element={<Navigate to="/login" replace />} />
         <Route path="*" element={<Navigate to="/login" replace />} />

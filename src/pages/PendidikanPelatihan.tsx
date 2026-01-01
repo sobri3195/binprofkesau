@@ -54,10 +54,10 @@ export function PendidikanPelatihanPage() {
   const [deletingId, setDeletingId] = useState<string | null>(null);
 
   // Role-based permissions
-  const canCreate = user?.role === 'SuperAdmin' || user?.role === 'AdminSatuan' || user?.role === 'Operator';
-  const canEdit = user?.role === 'SuperAdmin' || user?.role === 'AdminSatuan';
-  const canDelete = user?.role === 'SuperAdmin' || user?.role === 'AdminSatuan';
-  const canExport = user?.role === 'SuperAdmin' || user?.role === 'AdminSatuan';
+  const canCreate = !!user;
+  const canEdit = !!user;
+  const canDelete = !!user;
+  const canExport = !!user;
 
   // Filter personel based on user role
   const filteredPersonel = useMemo(() => {

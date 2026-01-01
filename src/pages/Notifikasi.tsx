@@ -4,8 +4,9 @@ import { Badge } from '@/components/ui/badge';
 import { Button } from '@/components/ui/button';
 import { Notifikasi, KategoriNotifikasi } from '@/types/models';
 import { StorageService } from '@/services/storage';
+import { ExportService } from '@/services/export';
 import { format } from 'date-fns';
-import { Bell, Check } from 'lucide-react';
+import { Bell, Check, Download } from 'lucide-react';
 
 export function NotifikasiPage() {
   const [notifikasi, setNotifikasi] = useState<Notifikasi[]>(
@@ -29,23 +30,65 @@ export function NotifikasiPage() {
     StorageService.set('notifikasi', updated);
   };
 
+  const handleExportCSV = () => {
+    ExportService.exportToCSV(
+      filteredNotifikasi,
+      'notifikasi-binprofkes',
+      ['kategori', 'judul', 'isi', 'dibaca', 'createdAt']
+    );
+  };
+
+  const handleExportExcel = () => {
+    ExportService.exportToExcel(
+      filteredNotifikasi,
+      'notifikasi-binprofkes',
+      ['kategori', 'judul', 'isi', 'dibaca', 'createdAt']
+    );
+  };
+
+  const handleExportPDF = () => {
+    ExportService.exportToPDF(filteredNotifikasi, 'Notifikasi BINPROFKES', [
+      { header: 'Kategori', dataKey: 'kategori' },
+      { header: 'Judul', dataKey: 'judul' },
+      { header: 'Isi', dataKey: 'isi' },
+      { header: 'Dibaca', dataKey: 'dibaca' },
+      { header: 'Tanggal', dataKey: 'createdAt' },
+    ]);
+  };
+
   const unreadCount = notifikasi.filter(n => !n.dibaca).length;
 
   return (
     <div className="space-y-6">
-      <div className="flex items-center justify-between">
+      <div className="flex flex-col sm:flex-row sm:items-center sm:justify-between gap-3">
         <div>
           <h1 className="text-3xl font-bold">Notifikasi</h1>
           <p className="text-muted-foreground">
             {unreadCount} notifikasi belum dibaca
           </p>
         </div>
-        {unreadCount > 0 && (
-          <Button onClick={handleMarkAllAsRead}>
-            <Check className="mr-2 h-4 w-4" />
-            Tandai Semua Dibaca
-          </Button>
-        )}
+        <div className="flex flex-col sm:flex-row gap-2">
+          <div className="flex gap-2">
+            <Button variant="outline" size="sm" onClick={handleExportCSV}>
+              <Download className="mr-2 h-4 w-4" />
+              CSV
+            </Button>
+            <Button variant="outline" size="sm" onClick={handleExportExcel}>
+              <Download className="mr-2 h-4 w-4" />
+              Excel
+            </Button>
+            <Button variant="outline" size="sm" onClick={handleExportPDF}>
+              <Download className="mr-2 h-4 w-4" />
+              PDF
+            </Button>
+          </div>
+          {unreadCount > 0 && (
+            <Button onClick={handleMarkAllAsRead}>
+              <Check className="mr-2 h-4 w-4" />
+              Tandai Semua Dibaca
+            </Button>
+          )}
+        </div>
       </div>
 
       <div className="flex gap-2">
