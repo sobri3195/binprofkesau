@@ -8,6 +8,7 @@ import { ExportService } from '@/services/export';
 import { Personel, Pangkat } from '@/types/models';
 import { useAuthStore } from '@/store/authStore';
 import { Plus, Download, Search, Pencil, Trash2 } from 'lucide-react';
+import { PersonelFormModal } from '@/components/personel/PersonelFormModal';
 
 const personelRepo = new Repository<Personel>('personel', 'Personel');
 
@@ -16,10 +17,12 @@ export function PersonelPage() {
   const [personel, setPersonel] = useState<Personel[]>(personelRepo.getAll());
   const [search, setSearch] = useState('');
   const [filterPangkat, setFilterPangkat] = useState<Pangkat | ''>('');
+  const [isFormModalOpen, setIsFormModalOpen] = useState(false);
+  const [editingPersonel, setEditingPersonel] = useState<Personel | null>(null);
 
-  const canCreate = user?.role === 'SuperAdmin' || user?.role === 'AdminSatuan' || user?.role === 'Operator';
-  const canEdit = user?.role === 'SuperAdmin' || user?.role === 'AdminSatuan';
-  const canDelete = user?.role === 'SuperAdmin' || user?.role === 'AdminSatuan';
+  const canCreate = !!user;
+  const canEdit = !!user;
+  const canDelete = !!user;
 
   const filteredPersonel = useMemo(() => {
     return personel.filter(p => {
@@ -37,9 +40,31 @@ export function PersonelPage() {
 
   const handleDelete = (id: string) => {
     if (confirm('Apakah Anda yakin ingin menghapus data personel ini?')) {
-      personelRepo.delete(id, user!.id);
+      personelRepo.delete(id, user?.id ?? 'system');
       setPersonel(personelRepo.getAll());
     }
+  };
+
+  const handleAdd = () => {
+    setEditingPersonel(null);
+    setIsFormModalOpen(true);
+  };
+
+  const handleEdit = (item: Personel) => {
+    setEditingPersonel(item);
+    setIsFormModalOpen(true);
+  };
+
+  const handleFormSubmit = (data: Omit<Personel, 'id' | 'createdAt' | 'updatedAt'>) => {
+    if (editingPersonel) {
+      personelRepo.update(editingPersonel.id, data, user?.id ?? 'system');
+    } else {
+      personelRepo.create(data, user?.id ?? 'system');
+    }
+
+    setPersonel(personelRepo.getAll());
+    setIsFormModalOpen(false);
+    setEditingPersonel(null);
   };
 
   const handleExportCSV = () => {
@@ -85,7 +110,7 @@ export function PersonelPage() {
           </p>
         </div>
         {canCreate && (
-          <Button className="w-full sm:w-auto">
+          <Button className="w-full sm:w-auto" onClick={handleAdd}>
             <Plus className="mr-2 h-4 w-4" />
             Tambah Personel
           </Button>
@@ -192,7 +217,11 @@ export function PersonelPage() {
                           <td className="px-4 py-3 text-right">
                             <div className="flex justify-end gap-2">
                               {canEdit && (
-                                <Button variant="ghost" size="sm">
+                                <Button
+                                  variant="ghost"
+                                  size="sm"
+                                  onClick={() => handleEdit(p)}
+                                >
                                   <Pencil className="h-4 w-4" />
                                 </Button>
                               )}
@@ -271,7 +300,12 @@ export function PersonelPage() {
                       {(canEdit || canDelete) && (
                         <div className="flex gap-2 pt-2 border-t">
                           {canEdit && (
-                            <Button variant="outline" size="sm" className="flex-1">
+                            <Button
+                              variant="outline"
+                              size="sm"
+                              className="flex-1"
+                              onClick={() => handleEdit(p)}
+                            >
                               <Pencil className="h-4 w-4 mr-1" />
                               Edit
                             </Button>
@@ -301,6 +335,16 @@ export function PersonelPage() {
           </div>
         </CardContent>
       </Card>
+
+      <PersonelFormModal
+        isOpen={isFormModalOpen}
+        onClose={() => {
+          setIsFormModalOpen(false);
+          setEditingPersonel(null);
+        }}
+        onSubmit={handleFormSubmit}
+        personel={editingPersonel}
+      />
     </div>
   );
 }
