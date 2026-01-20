@@ -1,8 +1,8 @@
-import { Menu, Moon, Sun, LogOut } from 'lucide-react';
 import { useAuthStore } from '@/store/authStore';
 import { useUIStore } from '@/store/uiStore';
 import { Button } from '@/components/ui/button';
 import { useNavigate } from 'react-router-dom';
+import { LogOut, Menu, Moon, Sun } from 'lucide-react';
 
 export function Topbar() {
   const { logout } = useAuthStore();
