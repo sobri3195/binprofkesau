@@ -1,4 +1,4 @@
-import * as React from 'react';
+import { useEffect } from 'react';
 import { Link, useLocation } from 'react-router-dom';
 import {
   LayoutDashboard,
@@ -35,7 +35,7 @@ export function Sidebar() {
   );
 
   // Close sidebar on mobile when route changes
-  React.useEffect(() => {
+  useEffect(() => {
     if (window.innerWidth < 1024) {
       setSidebarOpen(false);
     }

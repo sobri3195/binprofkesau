@@ -7,6 +7,7 @@ import { Repository } from '@/services/repository';
 import { ExportService } from '@/services/export';
 import { Personel, Pangkat } from '@/types/models';
 import { useAuthStore } from '@/store/authStore';
+import { PersonelFormModal } from '@/components/personel/PersonelFormModal';
 import { Plus, Download, Search, Pencil, Trash2 } from 'lucide-react';
 
 const personelRepo = new Repository<Personel>('personel', 'Personel');
@@ -17,9 +18,40 @@ export function PersonelPage() {
   const [search, setSearch] = useState('');
   const [filterPangkat, setFilterPangkat] = useState<Pangkat | ''>('');
 
+  // Modal State
+  const [isFormModalOpen, setIsFormModalOpen] = useState(false);
+  const [editingPersonel, setEditingPersonel] = useState<Personel | null>(null);
+
   const canCreate = user?.role === 'SuperAdmin' || user?.role === 'AdminSatuan' || user?.role === 'Operator';
   const canEdit = user?.role === 'SuperAdmin' || user?.role === 'AdminSatuan';
   const canDelete = user?.role === 'SuperAdmin' || user?.role === 'AdminSatuan';
+
+  const handleAdd = () => {
+    setEditingPersonel(null);
+    setIsFormModalOpen(true);
+  };
+
+  const handleEdit = (p: Personel) => {
+    setEditingPersonel(p);
+    setIsFormModalOpen(true);
+  };
+
+  const handleFormSubmit = (data: Omit<Personel, 'id' | 'createdAt' | 'updatedAt'>) => {
+    if (!user) return;
+
+    const normalizedData =
+      user.role === 'AdminSatuan' && user.satuan ? { ...data, satuan: user.satuan } : data;
+
+    if (editingPersonel) {
+      personelRepo.update(editingPersonel.id, normalizedData, user.id);
+    } else {
+      personelRepo.create(normalizedData, user.id);
+    }
+
+    setPersonel(personelRepo.getAll());
+    setIsFormModalOpen(false);
+    setEditingPersonel(null);
+  };
 
   const filteredPersonel = useMemo(() => {
     return personel.filter(p => {
@@ -46,7 +78,7 @@ export function PersonelPage() {
     ExportService.exportToCSV(
       filteredPersonel,
       'personel-binprofkes',
-      ['nrp', 'nama', 'pangkat', 'korps', 'satuan', 'jabatan', 'pekerjaan', 'status']
+      ['nrp', 'nama', 'nomorHape', 'pangkat', 'korps', 'satuan', 'jabatan', 'pekerjaan', 'status']
     );
   };
 
@@ -54,7 +86,7 @@ export function PersonelPage() {
     ExportService.exportToExcel(
       filteredPersonel,
       'personel-binprofkes',
-      ['nrp', 'nama', 'pangkat', 'korps', 'satuan', 'jabatan', 'pekerjaan', 'status']
+      ['nrp', 'nama', 'nomorHape', 'pangkat', 'korps', 'satuan', 'jabatan', 'pekerjaan', 'status']
     );
   };
 
@@ -65,6 +97,7 @@ export function PersonelPage() {
       [
         { header: 'NRP', dataKey: 'nrp' },
         { header: 'Nama', dataKey: 'nama' },
+        { header: 'No. HP', dataKey: 'nomorHape' },
         { header: 'Pangkat', dataKey: 'pangkat' },
         { header: 'Korps', dataKey: 'korps' },
         { header: 'Satuan', dataKey: 'satuan' },
@@ -85,7 +118,7 @@ export function PersonelPage() {
           </p>
         </div>
         {canCreate && (
-          <Button className="w-full sm:w-auto">
+          <Button className="w-full sm:w-auto" onClick={handleAdd}>
             <Plus className="mr-2 h-4 w-4" />
             Tambah Personel
           </Button>
@@ -147,6 +180,7 @@ export function PersonelPage() {
                   <tr>
                     <th className="px-4 py-3 text-left text-sm font-medium">NRP</th>
                     <th className="px-4 py-3 text-left text-sm font-medium">Nama</th>
+                    <th className="px-4 py-3 text-left text-sm font-medium">No. HP</th>
                     <th className="px-4 py-3 text-left text-sm font-medium">Pangkat</th>
                     <th className="px-4 py-3 text-left text-sm font-medium">Korps</th>
                     <th className="px-4 py-3 text-left text-sm font-medium">Satuan</th>
@@ -161,7 +195,10 @@ export function PersonelPage() {
                 <tbody className="divide-y">
                   {filteredPersonel.length === 0 ? (
                     <tr>
-                      <td colSpan={9} className="px-4 py-8 text-center text-sm text-muted-foreground">
+                      <td
+                        colSpan={(canEdit || canDelete) ? 10 : 9}
+                        className="px-4 py-8 text-center text-sm text-muted-foreground"
+                      >
                         Tidak ada data personel
                       </td>
                     </tr>
@@ -170,6 +207,7 @@ export function PersonelPage() {
                       <tr key={p.id} className="hover:bg-muted/50">
                         <td className="px-4 py-3 text-sm">{p.nrp}</td>
                         <td className="px-4 py-3 text-sm font-medium">{p.nama}</td>
+                        <td className="px-4 py-3 text-sm">{p.nomorHape || '-'}</td>
                         <td className="px-4 py-3 text-sm">
                           <Badge variant={
                             p.pangkat === 'Perwira' ? 'default' :
@@ -192,7 +230,7 @@ export function PersonelPage() {
                           <td className="px-4 py-3 text-right">
                             <div className="flex justify-end gap-2">
                               {canEdit && (
-                                <Button variant="ghost" size="sm">
+                                <Button variant="ghost" size="sm" onClick={() => handleEdit(p)}>
                                   <Pencil className="h-4 w-4" />
                                 </Button>
                               )}
@@ -254,6 +292,10 @@ export function PersonelPage() {
                           <span className="text-gray-500">Korps:</span>
                           <p className="font-medium text-gray-900 mt-1">{p.korps}</p>
                         </div>
+                        <div>
+                          <span className="text-gray-500">No. HP:</span>
+                          <p className="font-medium text-gray-900 mt-1">{p.nomorHape || '-'}</p>
+                        </div>
                         <div className="col-span-2">
                           <span className="text-gray-500">Satuan:</span>
                           <p className="font-medium text-gray-900 mt-1">{p.satuan}</p>
@@ -271,7 +313,12 @@ export function PersonelPage() {
                       {(canEdit || canDelete) && (
                         <div className="flex gap-2 pt-2 border-t">
                           {canEdit && (
-                            <Button variant="outline" size="sm" className="flex-1">
+                            <Button
+                              variant="outline"
+                              size="sm"
+                              className="flex-1"
+                              onClick={() => handleEdit(p)}
+                            >
                               <Pencil className="h-4 w-4 mr-1" />
                               Edit
                             </Button>
@@ -301,6 +348,18 @@ export function PersonelPage() {
           </div>
         </CardContent>
       </Card>
+
+      <PersonelFormModal
+        isOpen={isFormModalOpen}
+        onClose={() => {
+          setIsFormModalOpen(false);
+          setEditingPersonel(null);
+        }}
+        onSubmit={handleFormSubmit}
+        personel={editingPersonel}
+        existingPersonel={personel}
+        currentUser={user}
+      />
     </div>
   );
 }

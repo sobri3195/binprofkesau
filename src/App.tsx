@@ -11,9 +11,9 @@ import { LogAktivitasPage } from '@/pages/LogAktivitas';
 import { UsersPage } from '@/pages/Users';
 import { AppLayout } from '@/components/layout/AppLayout';
 import { seedData } from '@/data/seed';
-import { useEffect } from 'react';
+import { useEffect, type ReactNode } from 'react';
 
-function ProtectedRoute({ children, allowedRoles }: { children: React.ReactNode; allowedRoles?: string[] }) {
+function ProtectedRoute({ children, allowedRoles }: { children: ReactNode; allowedRoles?: string[] }) {
   const { isAuthenticated, user } = useAuthStore();
 
   if (!isAuthenticated) {
