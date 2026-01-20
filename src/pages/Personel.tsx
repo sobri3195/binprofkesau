@@ -7,7 +7,8 @@ import { Repository } from '@/services/repository';
 import { ExportService } from '@/services/export';
 import { Personel, Pangkat } from '@/types/models';
 import { useAuthStore } from '@/store/authStore';
-import { Plus, Download, Search, Pencil, Trash2 } from 'lucide-react';
+import { Plus, Download, Search, Pencil, Trash2, Phone, History, Edit, User } from 'lucide-react';
+import { PersonelDetailModal } from '@/components/personel/PersonelDetailModal';
 
 const personelRepo = new Repository<Personel>('personel', 'Personel');
 
@@ -16,6 +17,8 @@ export function PersonelPage() {
   const [personel, setPersonel] = useState<Personel[]>(personelRepo.getAll());
   const [search, setSearch] = useState('');
   const [filterPangkat, setFilterPangkat] = useState<Pangkat | ''>('');
+  const [selectedPersonel, setSelectedPersonel] = useState<Personel | null>(null);
+  const [showDetailModal, setShowDetailModal] = useState(false);
 
   const canCreate = user?.role === 'SuperAdmin' || user?.role === 'AdminSatuan' || user?.role === 'Operator';
   const canEdit = user?.role === 'SuperAdmin' || user?.role === 'AdminSatuan';
@@ -40,6 +43,11 @@ export function PersonelPage() {
       personelRepo.delete(id, user!.id);
       setPersonel(personelRepo.getAll());
     }
+  };
+
+  const handleViewDetails = (p: Personel) => {
+    setSelectedPersonel(p);
+    setShowDetailModal(true);
   };
 
   const handleExportCSV = () => {
@@ -153,6 +161,8 @@ export function PersonelPage() {
                     <th className="px-4 py-3 text-left text-sm font-medium">Jabatan</th>
                     <th className="px-4 py-3 text-left text-sm font-medium">Pekerjaan</th>
                     <th className="px-4 py-3 text-left text-sm font-medium">Status</th>
+                    <th className="px-4 py-3 text-left text-sm font-medium">No. HP</th>
+                    <th className="px-4 py-3 text-left text-sm font-medium">Detail</th>
                     {(canEdit || canDelete) && (
                       <th className="px-4 py-3 text-right text-sm font-medium">Aksi</th>
                     )}
@@ -161,8 +171,8 @@ export function PersonelPage() {
                 <tbody className="divide-y">
                   {filteredPersonel.length === 0 ? (
                     <tr>
-                      <td colSpan={9} className="px-4 py-8 text-center text-sm text-muted-foreground">
-                        Tidak ada data personel
+                      <td colSpan={11} className="px-4 py-8 text-center text-sm text-muted-foreground">
+                      Tidak ada data personel
                       </td>
                     </tr>
                   ) : (
@@ -187,6 +197,20 @@ export function PersonelPage() {
                           <Badge variant={p.status === 'Aktif' ? 'success' : 'warning'}>
                             {p.status}
                           </Badge>
+                        </td>
+                        <td className="px-4 py-3 text-sm">
+                          {p.nomorHp || '-'}
+                        </td>
+                        <td className="px-4 py-3 text-sm">
+                          <Button
+                            variant="ghost"
+                            size="sm"
+                            onClick={() => handleViewDetails(p)}
+                            className="text-blue-600 hover:text-blue-700 hover:bg-blue-50"
+                          >
+                            <History className="h-4 w-4 mr-1" />
+                            <span className="hidden sm:inline">Detail</span>
+                          </Button>
                         </td>
                         {(canEdit || canDelete) && (
                           <td className="px-4 py-3 text-right">
@@ -266,6 +290,25 @@ export function PersonelPage() {
                           <span className="text-gray-500">Pekerjaan:</span>
                           <p className="font-medium text-gray-900 mt-1">{p.pekerjaan}</p>
                         </div>
+                        
+                        {p.nomorHp && (
+                          <div className="col-span-2">
+                            <span className="text-gray-500">No. HP:</span>
+                            <p className="font-medium text-gray-900 mt-1">{p.nomorHp}</p>
+                          </div>
+                        )}
+                      </div>
+
+                      <div className="pt-2 border-t flex gap-2">
+                        <Button
+                          variant="outline"
+                          size="sm"
+                          onClick={() => handleViewDetails(p)}
+                          className="flex-1 text-blue-600 hover:text-blue-700 hover:bg-blue-50"
+                        >
+                          <History className="h-4 w-4 mr-1" />
+                          Detail
+                        </Button>
                       </div>
 
                       {(canEdit || canDelete) && (
@@ -301,6 +344,14 @@ export function PersonelPage() {
           </div>
         </CardContent>
       </Card>
+
+      {/* Detail Modal */}
+      <PersonelDetailModal
+        isOpen={showDetailModal}
+        onClose={() => setShowDetailModal(false)}
+        personel={selectedPersonel}
+        onUpdate={() => setPersonel(personelRepo.getAll())}
+      />
     </div>
   );
 }

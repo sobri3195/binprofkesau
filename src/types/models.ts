@@ -29,6 +29,7 @@ export interface Personel {
   status: string;
   jabatan: string;
   pekerjaan: string;
+  nomorHp?: string;
   keluhanBulanan?: Array<{ month: string; count: number }>;
   createdAt: string;
   updatedAt: string;
