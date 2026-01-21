@@ -8,6 +8,13 @@
       "when": 1764215936855,
       "tag": "0000_black_wilson_fisk",
       "breakpoints": true
+    },
+    {
+      "idx": 1,
+      "version": "7",
+      "when": 1768954313581,
+      "tag": "0001_thin_ink",
+      "breakpoints": true
     }
   ]
 }

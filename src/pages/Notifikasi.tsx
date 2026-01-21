@@ -32,27 +32,28 @@ export function NotifikasiPage() {
   const unreadCount = notifikasi.filter(n => !n.dibaca).length;
 
   return (
-    <div className="space-y-6">
-      <div className="flex items-center justify-between">
+    <div className="space-y-4 sm:space-y-6">
+      <div className="flex flex-col sm:flex-row sm:items-center sm:justify-between gap-3">
         <div>
-          <h1 className="text-3xl font-bold">Notifikasi</h1>
-          <p className="text-muted-foreground">
+          <h1 className="text-2xl sm:text-3xl font-bold">Notifikasi</h1>
+          <p className="text-sm sm:text-base text-muted-foreground">
             {unreadCount} notifikasi belum dibaca
           </p>
         </div>
         {unreadCount > 0 && (
-          <Button onClick={handleMarkAllAsRead}>
+          <Button onClick={handleMarkAllAsRead} className="w-full sm:w-auto">
             <Check className="mr-2 h-4 w-4" />
             Tandai Semua Dibaca
           </Button>
         )}
       </div>
 
-      <div className="flex gap-2">
+      <div className="flex gap-2 overflow-x-auto pb-2">
         <Button
           variant={filter === '' ? 'default' : 'outline'}
           size="sm"
           onClick={() => setFilter('')}
+          className="shrink-0"
         >
           Semua
         </Button>
@@ -62,6 +63,7 @@ export function NotifikasiPage() {
             variant={filter === kat ? 'default' : 'outline'}
             size="sm"
             onClick={() => setFilter(kat)}
+            className="shrink-0"
           >
             {kat}
           </Button>

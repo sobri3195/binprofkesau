@@ -19,6 +19,30 @@ export interface User {
   updatedAt: string;
 }
 
+export interface RiwayatKedinasan {
+  id: string;
+  jabatan: string;
+  satuan: string;
+  tanggalMulai: string;
+  tanggalSelesai?: string;
+}
+
+export interface RiwayatPenghargaan {
+  id: string;
+  nama: string;
+  pemberi: string;
+  tanggal: string;
+  keterangan?: string;
+}
+
+export interface RiwayatKarya {
+  id: string;
+  judul: string;
+  jenis: string; // Penelitian, Publikasi, Karya Tulis, dll
+  tahun: string;
+  deskripsi?: string;
+}
+
 export interface Personel {
   id: string;
   nrp: string;
@@ -29,7 +53,11 @@ export interface Personel {
   status: string;
   jabatan: string;
   pekerjaan: string;
+  noHP?: string;
   keluhanBulanan?: Array<{ month: string; count: number }>;
+  riwayatKedinasan?: RiwayatKedinasan[];
+  riwayatPenghargaan?: RiwayatPenghargaan[];
+  riwayatKarya?: RiwayatKarya[];
   createdAt: string;
   updatedAt: string;
 }
