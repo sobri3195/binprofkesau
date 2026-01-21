@@ -7,7 +7,8 @@ import { Repository } from '@/services/repository';
 import { ExportService } from '@/services/export';
 import { Personel, Pangkat } from '@/types/models';
 import { useAuthStore } from '@/store/authStore';
-import { Plus, Download, Search, Pencil, Trash2 } from 'lucide-react';
+import { Plus, Download, Search, Pencil, Trash2, Eye, Phone, Award, Briefcase } from 'lucide-react';
+import { PersonelDetailModal } from '@/components/personel/PersonelDetailModal';
 
 const personelRepo = new Repository<Personel>('personel', 'Personel');
 
@@ -16,6 +17,9 @@ export function PersonelPage() {
   const [personel, setPersonel] = useState<Personel[]>(personelRepo.getAll());
   const [search, setSearch] = useState('');
   const [filterPangkat, setFilterPangkat] = useState<Pangkat | ''>('');
+  const [selectedPersonel, setSelectedPersonel] = useState<Personel | null>(null);
+  const [isModalOpen, setIsModalOpen] = useState(false);
+  const [modalMode, setModalMode] = useState<'view' | 'edit'>('view');
 
   const canCreate = user?.role === 'SuperAdmin' || user?.role === 'AdminSatuan' || user?.role === 'Operator';
   const canEdit = user?.role === 'SuperAdmin' || user?.role === 'AdminSatuan';
@@ -36,8 +40,10 @@ export function PersonelPage() {
   }, [personel, search, filterPangkat, user]);
 
   const handleDelete = (id: string) => {
+    if (!user) return;
+
     if (confirm('Apakah Anda yakin ingin menghapus data personel ini?')) {
-      personelRepo.delete(id, user!.id);
+      personelRepo.delete(id, user.id);
       setPersonel(personelRepo.getAll());
     }
   };
@@ -73,6 +79,35 @@ export function PersonelPage() {
         { header: 'Status', dataKey: 'status' },
       ]
     );
+  };
+
+  const handleViewDetail = (p: Personel) => {
+    setSelectedPersonel(p);
+    setModalMode('view');
+    setIsModalOpen(true);
+  };
+
+  const handleEditDetail = (p: Personel) => {
+    setSelectedPersonel(p);
+    setModalMode('edit');
+    setIsModalOpen(true);
+  };
+
+  const handleSaveDetail = (
+    updates: Pick<Personel, 'noHP' | 'riwayatKedinasan' | 'riwayatPenghargaan' | 'riwayatKarya'>
+  ) => {
+    if (!user || !selectedPersonel) return;
+
+    const updated = personelRepo.update(selectedPersonel.id, updates, user.id);
+    if (updated) {
+      setPersonel(personelRepo.getAll());
+      setSelectedPersonel(updated);
+    }
+  };
+
+  const handleCloseModal = () => {
+    setIsModalOpen(false);
+    setSelectedPersonel(null);
   };
 
   return (
@@ -151,17 +186,14 @@ export function PersonelPage() {
                     <th className="px-4 py-3 text-left text-sm font-medium">Korps</th>
                     <th className="px-4 py-3 text-left text-sm font-medium">Satuan</th>
                     <th className="px-4 py-3 text-left text-sm font-medium">Jabatan</th>
-                    <th className="px-4 py-3 text-left text-sm font-medium">Pekerjaan</th>
                     <th className="px-4 py-3 text-left text-sm font-medium">Status</th>
-                    {(canEdit || canDelete) && (
-                      <th className="px-4 py-3 text-right text-sm font-medium">Aksi</th>
-                    )}
+                    <th className="px-4 py-3 text-right text-sm font-medium">Aksi</th>
                   </tr>
                 </thead>
                 <tbody className="divide-y">
                   {filteredPersonel.length === 0 ? (
                     <tr>
-                      <td colSpan={9} className="px-4 py-8 text-center text-sm text-muted-foreground">
+                      <td colSpan={8} className="px-4 py-8 text-center text-sm text-muted-foreground">
                         Tidak ada data personel
                       </td>
                     </tr>
@@ -182,32 +214,32 @@ export function PersonelPage() {
                         <td className="px-4 py-3 text-sm">{p.korps}</td>
                         <td className="px-4 py-3 text-sm">{p.satuan}</td>
                         <td className="px-4 py-3 text-sm">{p.jabatan}</td>
-                        <td className="px-4 py-3 text-sm">{p.pekerjaan}</td>
                         <td className="px-4 py-3 text-sm">
                           <Badge variant={p.status === 'Aktif' ? 'success' : 'warning'}>
                             {p.status}
                           </Badge>
                         </td>
-                        {(canEdit || canDelete) && (
-                          <td className="px-4 py-3 text-right">
-                            <div className="flex justify-end gap-2">
-                              {canEdit && (
-                                <Button variant="ghost" size="sm">
-                                  <Pencil className="h-4 w-4" />
-                                </Button>
-                              )}
-                              {canDelete && (
-                                <Button
-                                  variant="ghost"
-                                  size="sm"
-                                  onClick={() => handleDelete(p.id)}
-                                >
-                                  <Trash2 className="h-4 w-4 text-destructive" />
-                                </Button>
-                              )}
-                            </div>
-                          </td>
-                        )}
+                        <td className="px-4 py-3 text-right">
+                          <div className="flex justify-end gap-2">
+                            <Button variant="ghost" size="sm" onClick={() => handleViewDetail(p)}>
+                              <Eye className="h-4 w-4" />
+                            </Button>
+                            {canEdit && (
+                              <Button variant="ghost" size="sm" onClick={() => handleEditDetail(p)}>
+                                <Pencil className="h-4 w-4" />
+                              </Button>
+                            )}
+                            {canDelete && (
+                              <Button
+                                variant="ghost"
+                                size="sm"
+                                onClick={() => handleDelete(p.id)}
+                              >
+                                <Trash2 className="h-4 w-4 text-destructive" />
+                              </Button>
+                            )}
+                          </div>
+                        </td>
                       </tr>
                     ))
                   )}
@@ -262,33 +294,63 @@ export function PersonelPage() {
                           <span className="text-gray-500">Jabatan:</span>
                           <p className="font-medium text-gray-900 mt-1">{p.jabatan}</p>
                         </div>
-                        <div className="col-span-2">
-                          <span className="text-gray-500">Pekerjaan:</span>
-                          <p className="font-medium text-gray-900 mt-1">{p.pekerjaan}</p>
-                        </div>
                       </div>
 
-                      {(canEdit || canDelete) && (
-                        <div className="flex gap-2 pt-2 border-t">
-                          {canEdit && (
-                            <Button variant="outline" size="sm" className="flex-1">
-                              <Pencil className="h-4 w-4 mr-1" />
-                              Edit
-                            </Button>
-                          )}
-                          {canDelete && (
-                            <Button
-                              variant="outline"
-                              size="sm"
-                              onClick={() => handleDelete(p.id)}
-                              className="flex-1 text-destructive hover:bg-destructive/10"
-                            >
-                              <Trash2 className="h-4 w-4 mr-1" />
-                              Hapus
-                            </Button>
-                          )}
-                        </div>
-                      )}
+                      {/* Quick Info Badges */}
+                      <div className="flex flex-wrap gap-2 pt-2 border-t">
+                        {p.noHP && (
+                          <Badge variant="outline" className="text-xs">
+                            <Phone className="w-3 h-3 mr-1" />
+                            Kontak
+                          </Badge>
+                        )}
+                        {p.riwayatKedinasan && p.riwayatKedinasan.length > 0 && (
+                          <Badge variant="outline" className="text-xs">
+                            <Briefcase className="w-3 h-3 mr-1" />
+                            {p.riwayatKedinasan.length} Kedinasan
+                          </Badge>
+                        )}
+                        {p.riwayatPenghargaan && p.riwayatPenghargaan.length > 0 && (
+                          <Badge variant="outline" className="text-xs">
+                            <Award className="w-3 h-3 mr-1" />
+                            {p.riwayatPenghargaan.length} Penghargaan
+                          </Badge>
+                        )}
+                      </div>
+
+                      {/* Action Buttons */}
+                      <div className="flex gap-2 pt-2 border-t">
+                        <Button 
+                          variant="outline" 
+                          size="sm" 
+                          className="flex-1"
+                          onClick={() => handleViewDetail(p)}
+                        >
+                          <Eye className="h-4 w-4 mr-1" />
+                          Detail
+                        </Button>
+                        {canEdit && (
+                          <Button 
+                            variant="outline" 
+                            size="sm" 
+                            className="flex-1"
+                            onClick={() => handleEditDetail(p)}
+                          >
+                            <Pencil className="h-4 w-4 mr-1" />
+                            Edit
+                          </Button>
+                        )}
+                        {canDelete && (
+                          <Button
+                            variant="outline"
+                            size="sm"
+                            onClick={() => handleDelete(p.id)}
+                            className="text-destructive hover:bg-destructive/10"
+                          >
+                            <Trash2 className="h-4 w-4" />
+                          </Button>
+                        )}
+                      </div>
                     </div>
                   </CardContent>
                 </Card>
@@ -301,6 +363,16 @@ export function PersonelPage() {
           </div>
         </CardContent>
       </Card>
+
+      {/* Detail Modal */}
+      <PersonelDetailModal
+        isOpen={isModalOpen}
+        onClose={handleCloseModal}
+        onSave={handleSaveDetail}
+        personel={selectedPersonel}
+        mode={modalMode}
+        canEdit={canEdit}
+      />
     </div>
   );
 }

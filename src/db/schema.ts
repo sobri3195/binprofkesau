@@ -24,7 +24,11 @@ export const personel = pgTable('personel', {
   status: text('status').notNull(),
   jabatan: text('jabatan').notNull(),
   pekerjaan: text('pekerjaan').notNull(),
+  noHP: text('no_hp'),
   keluhanBulanan: jsonb('keluhan_bulanan'), // Array of { month: string, count: number }
+  riwayatKedinasan: jsonb('riwayat_kedinasan'),
+  riwayatPenghargaan: jsonb('riwayat_penghargaan'),
+  riwayatKarya: jsonb('riwayat_karya'),
   createdAt: timestamp('created_at').notNull().defaultNow(),
   updatedAt: timestamp('updated_at').notNull().defaultNow(),
 });
