@@ -2,10 +2,18 @@ export type Pangkat = "Tamtama" | "Bintara" | "Perwira";
 export type StatusSertifikat = "Berlaku" | "Akan Berakhir" | "Kedaluwarsa";
 export type StatusPelaksanaan = "Sudah Melaksanakan" | "Belum Melaksanakan";
 export type KategoriNotifikasi = "Informasi" | "Peringatan" | "Pembaruan" | "Belum sekolah" | "Belum pindah" | "Belum PPDS";
-export type JenisFasilitas = "Lanud" | "RSAU" | "Kodau" | "Koopsau" | "Satrad";
-export type Role = "SuperAdmin" | "AdminSatuan" | "Operator" | "Viewer";
+export type JenisFasilitas = "Lanud" | "RSAU" | "Kodau" | "Koopsau" | "Satrad" | "Puskesau";
+export type Role = "SuperAdmin" | "AdminSatuan" | "Operator" | "Viewer" | "Puskesau";
 export type AksiAudit = "login" | "create" | "update" | "delete";
-export type EntitasAudit = "Personel" | "Pelatihan" | "Fasilitas" | "User" | "Notifikasi";
+export type EntitasAudit = "Personel" | "Pelatihan" | "Fasilitas" | "User" | "Notifikasi" | "RekamMedis" | "AksesFasilitas";
+
+export type JenisPemeriksaan = "Umum" | "Rikkes" | "Dikbangum" | "Lanjutan" | "Rujukan";
+export type StatusRekamMedis = "Draft" | "Final" | "Selesai";
+export type AlasanAkses = "Rikkes" | "Dikbangum" | "Rujukan" | "Lanjutan" | "Lainnya";
+export type JenisRikkes = "Periodik" | "Dinas Luar" | "Lainnya";
+export type StatusRikkes = "Draft" | "Selesai";
+export type HasilKesehatan = "Sehat" | "Tidak Sehat" | "Sehat dengan Catatan";
+export type KesimpulanRikkes = "Layak" | "Tidak Layak" | "Perlu Observasi";
 
 export interface User {
   id: string;
@@ -117,4 +125,118 @@ export interface AuditLog {
   entitasId?: string;
   timestamp: string;
   meta?: Record<string, any>;
+}
+
+export interface RekamMedis {
+  id: string;
+  personelId: string;
+  satuan: string;
+  jenisPemeriksaan: JenisPemeriksaan;
+  diagnosa?: string;
+  tindakan?: string;
+  keluhan?: string;
+  hasilPenunjang?: Array<{
+    jenis: string;
+    hasil: string;
+    tanggal: string;
+  }>;
+  obat?: Array<{
+    nama: string;
+    dosis: string;
+    durasi: string;
+  }>;
+  dokterId?: string;
+  status: StatusRekamMedis;
+  catatanTambahan?: string;
+  createdAt: string;
+  updatedAt: string;
+}
+
+export interface AksesFasilitas {
+  id: string;
+  userId: string;
+  personelId: string;
+  fasilitasAsal: string;
+  fasilitasTujuan: string;
+  alasanAkses: AlasanAkses;
+  keteranganAlasan?: string;
+  tanggalAkses: string;
+  dataDiakses?: {
+    timeline?: boolean;
+    hasilPenunjang?: boolean;
+    resumeMedis?: boolean;
+  };
+  createdAt: string;
+}
+
+export interface RekamRikkes {
+  id: string;
+  personelId: string;
+  satuan: string;
+  tahunRikkes: string;
+  jenisRikkes: JenisRikkes;
+  hasilPenunjang?: {
+    labDarah?: string;
+    labUrine?: string;
+    rontgen?: string;
+    ekg?: string;
+    audiometri?: string;
+    tesNarkoba?: string;
+    lainnya?: Array<{ jenis: string; hasil: string }>;
+  };
+  kesehatanUmum?: HasilKesehatan;
+  kesehatanMata?: HasilKesehatan;
+  kesehatanGigi?: HasilKesehatan;
+  kesehatanTHT?: HasilKesehatan;
+  kesehatanJiwa?: HasilKesehatan;
+  kesimpulan?: KesimpulanRikkes;
+  rekomendasi?: string;
+  dokterId?: string;
+  resumeMedis?: string;
+  status: StatusRikkes;
+  createdAt: string;
+  updatedAt: string;
+}
+
+export interface ContinuityOfCare {
+  id: string;
+  personelId: string;
+  fasilitasAsal: string;
+  fasilitasTujuan: string;
+  tanggalEkspor: string;
+  ringkasanMedis: string;
+  riwayatDiagnosa?: Array<{
+    diagnosa: string;
+    tanggal: string;
+    fasilitas: string;
+  }>;
+  riwayatTindakan?: Array<{
+    tindakan: string;
+    tanggal: string;
+    fasilitas: string;
+  }>;
+  riwayatObat?: Array<{
+    nama: string;
+    dosis: string;
+    periode: string;
+  }>;
+  alergi?: string;
+  hasilRikkesTerakhir?: {
+    tahun: string;
+    kesimpulan: string;
+    rekomendasi: string;
+  };
+  catatanPemindahan?: string;
+  userId: string;
+  createdAt: string;
+}
+
+export interface TimelineEvent {
+  id: string;
+  tanggal: string;
+  jenis: JenisPemeriksaan;
+  fasilitas: string;
+  deskripsi: string;
+  diagnosa?: string;
+  tindakan?: string;
 }

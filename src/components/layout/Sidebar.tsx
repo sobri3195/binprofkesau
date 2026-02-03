@@ -9,18 +9,22 @@ import {
   Bell,
   FileText,
   UserCog,
+  Activity,
+  Shield,
 } from 'lucide-react';
 import { useAuthStore } from '@/store/authStore';
 import { useUIStore } from '@/store/uiStore';
 import { cn } from '@/lib/utils';
 
 const navigation = [
-  { name: 'Dashboard', href: '/app/dashboard', icon: LayoutDashboard, roles: ['SuperAdmin', 'AdminSatuan', 'Operator', 'Viewer'] },
+  { name: 'Dashboard', href: '/app/dashboard', icon: LayoutDashboard, roles: ['SuperAdmin', 'AdminSatuan', 'Operator', 'Viewer', 'Puskesau'] },
   { name: 'Personel', href: '/app/personel', icon: Users, roles: ['SuperAdmin', 'AdminSatuan', 'Operator', 'Viewer'] },
   { name: 'Pendidikan & Pelatihan', href: '/app/pelatihan', icon: GraduationCap, roles: ['SuperAdmin', 'AdminSatuan', 'Operator', 'Viewer'] },
   { name: 'Peta', href: '/app/peta', icon: Map, roles: ['SuperAdmin', 'AdminSatuan', 'Operator', 'Viewer'] },
   { name: 'Peta Sebaran', href: '/app/peta-sebaran', icon: MapPin, roles: ['SuperAdmin', 'AdminSatuan', 'Operator', 'Viewer'] },
-  { name: 'Notifikasi', href: '/app/notifikasi', icon: Bell, roles: ['SuperAdmin', 'AdminSatuan', 'Operator', 'Viewer'] },
+  { name: 'E-RM', href: '/app/erm', icon: Activity, roles: ['SuperAdmin', 'AdminSatuan', 'Operator'] },
+  { name: 'Portal Faskes', href: '/app/erm', icon: Shield, roles: ['Puskesau'] },
+  { name: 'Notifikasi', href: '/app/notifikasi', icon: Bell, roles: ['SuperAdmin', 'AdminSatuan', 'Operator', 'Viewer', 'Puskesau'] },
   { name: 'Log Aktivitas', href: '/app/log', icon: FileText, roles: ['SuperAdmin', 'AdminSatuan'] },
   { name: 'Manajemen User', href: '/app/users', icon: UserCog, roles: ['SuperAdmin'] },
 ];

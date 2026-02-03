@@ -9,6 +9,7 @@ import { PetaSebaranPage } from '@/pages/PetaSebaran';
 import { NotifikasiPage } from '@/pages/Notifikasi';
 import { LogAktivitasPage } from '@/pages/LogAktivitas';
 import { UsersPage } from '@/pages/Users';
+import { ElektronikRecordMedisPage } from '@/pages/ElectronikRecordMedis';
 import { AppLayout } from '@/components/layout/AppLayout';
 import { seedData } from '@/data/seed';
 import { useEffect } from 'react';
@@ -51,6 +52,14 @@ function App() {
           <Route path="peta" element={<PetaPage />} />
           <Route path="peta-sebaran" element={<PetaSebaranPage />} />
           <Route path="notifikasi" element={<NotifikasiPage />} />
+          <Route
+            path="erm"
+            element={
+              <ProtectedRoute allowedRoles={['SuperAdmin', 'AdminSatuan', 'Operator', 'Puskesau']}>
+                <ElektronikRecordMedisPage />
+              </ProtectedRoute>
+            }
+          />
           <Route
             path="log"
             element={
