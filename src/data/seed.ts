@@ -1,4 +1,4 @@
-import { User, Personel, Pelatihan, Fasilitas, Notifikasi } from '@/types/models';
+import { User, Personel, Pelatihan, Fasilitas, Notifikasi, RekamMedis, RekamRikkes } from '@/types/models';
 import { StorageService } from '@/services/storage';
 
 const users: User[] = [
@@ -45,6 +45,16 @@ const users: User[] = [
     email: 'bypass@binprofkes.mil.id',
     password: 'bypass123',
     role: 'SuperAdmin',
+    createdAt: '2024-01-01T00:00:00.000Z',
+    updatedAt: '2024-01-01T00:00:00.000Z',
+  },
+  {
+    id: '6',
+    name: 'Puskesau Jakarta',
+    email: 'puskesau.jakarta@binprofkes.mil.id',
+    password: 'puskesau123',
+    role: 'Puskesau',
+    satuan: 'Puskesau Jakarta',
     createdAt: '2024-01-01T00:00:00.000Z',
     updatedAt: '2024-01-01T00:00:00.000Z',
   },
@@ -476,6 +486,92 @@ const notifikasi: Notifikasi[] = [
   },
 ];
 
+const rekamMedis: RekamMedis[] = [
+  {
+    id: 'rm1',
+    personelId: 'p1',
+    satuan: 'Lanud Halim Perdanakusuma',
+    jenisPemeriksaan: 'Umum',
+    keluhan: 'Sakit kepala dan demam',
+    diagnosa: 'ISPA (Infeksi Saluran Pernapasan Atas)',
+    tindakan: 'Pemberian paracetamol dan istirahat',
+    obat: [
+      { nama: 'Paracetamol 500mg', dosis: '1 tablet', durasi: '3 hari' },
+      { nama: 'Vitamin C', dosis: '1 tablet', durasi: '7 hari' },
+    ],
+    dokterId: 'd1',
+    status: 'Selesai',
+    createdAt: '2024-01-15T08:00:00.000Z',
+    updatedAt: '2024-01-15T10:00:00.000Z',
+  },
+  {
+    id: 'rm2',
+    personelId: 'p2',
+    satuan: 'RSAU dr. Esnawan Antariksa',
+    jenisPemeriksaan: 'Rujukan',
+    keluhan: 'Sakit gigi berulang',
+    diagnosa: 'Gigi berlubang pada gigi geraham bawah kanan',
+    tindakan: 'Pembersihan karang gigi dan tambal',
+    obat: [
+      { nama: 'Amoxicillin 500mg', dosis: '1 tablet', durasi: '5 hari' },
+    ],
+    hasilPenunjang: [
+      { jenis: 'Foto Rontgen Gigi', hasil: 'Terlihat karies pada gigi 46', tanggal: '2024-02-10T09:00:00.000Z' },
+    ],
+    dokterId: 'd7',
+    status: 'Selesai',
+    createdAt: '2024-02-10T08:00:00.000Z',
+    updatedAt: '2024-02-10T11:00:00.000Z',
+  },
+  {
+    id: 'rm3',
+    personelId: 'p3',
+    satuan: 'Lanud Sultan Hasanuddin',
+    jenisPemeriksaan: 'Dikbangum',
+    keluhan: 'Check-up kesehatan sebelum dikbangum',
+    diagnosa: 'Kesehatan umum baik, tidak ada keluhan berarti',
+    tindakan: 'Observasi kesehatan rutin',
+    hasilPenunjang: [
+      { jenis: 'Lab Darah Lengkap', hasil: 'Dalam batas normal', tanggal: '2024-03-01T07:00:00.000Z' },
+      { jenis: 'Urine Analisis', hasil: 'Normal', tanggal: '2024-03-01T07:30:00.000Z' },
+    ],
+    dokterId: 'd12',
+    status: 'Selesai',
+    createdAt: '2024-03-01T07:00:00.000Z',
+    updatedAt: '2024-03-01T09:00:00.000Z',
+  },
+];
+
+const rekamRikkes: RekamRikkes[] = [
+  {
+    id: 'rr1',
+    personelId: 'p1',
+    satuan: 'RSAU dr. Esnawan Antariksa',
+    tahunRikkes: '2024',
+    jenisRikkes: 'Periodik',
+    hasilPenunjang: {
+      labDarah: 'Hb 15.2 g/dL, Leukosit 6.500/uL, Trombosit 250.000/uL',
+      labUrine: 'Warna kuning jernih, pH 6.0, protein negatif',
+      rontgen: 'Cor dan pulmo normal',
+      ekg: 'Sinus ritme normal',
+      audiometri: 'Hearing threshold normal',
+      tesNarkoba: 'Negatif',
+    },
+    kesehatanUmum: 'Sehat',
+    kesehatanMata: 'Sehat',
+    kesehatanGigi: 'Sehat',
+    kesehatanTHT: 'Sehat',
+    kesehatanJiwa: 'Sehat',
+    kesimpulan: 'Layak',
+    rekomendasi: 'Dapat melanjutkan tugas dengan normal',
+    dokterId: 'd5',
+    resumeMedis: 'RIKKES - Periodik Tahun 2024\nKesehatan Umum: Sehat\nKesehatan Mata: Sehat\nKesehatan Gigi: Sehat\nKesehatan THT: Sehat\nKesehatan Jiwa: Sehat\nKesimpulan: Layak\nRekomendasi: Dapat melanjutkan tugas dengan normal',
+    status: 'Selesai',
+    createdAt: '2024-01-05T07:00:00.000Z',
+    updatedAt: '2024-01-05T12:00:00.000Z',
+  },
+];
+
 export function seedData() {
   const hasData = StorageService.get('users');
   if (!hasData) {
@@ -485,6 +581,10 @@ export function seedData() {
     StorageService.set('fasilitas', fasilitas);
     StorageService.set('notifikasi', notifikasi);
     StorageService.set('audit', []);
+    StorageService.set('rekam_medis', rekamMedis);
+    StorageService.set('rekam_rikkes', rekamRikkes);
+    StorageService.set('akses_fasilitas', []);
+    StorageService.set('continuity_of_care', []);
     console.log('Seed data loaded successfully');
   }
 }

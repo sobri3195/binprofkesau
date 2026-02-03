@@ -1,19 +1,23 @@
 # BINPROFKES - Admin Panel
 
-Sistem Informasi Bina Profesional Kesehatan TNI Angkatan Udara.
+    Sistem Informasi Bina Profesional Kesehatan TNI Angkatan Udara.
 
-## Fitur Utama
+    ## Fitur Utama
 
-- ✅ **Dashboard** dengan KPI, grafik distribusi, dan tren keluhan
-- ✅ **Manajemen Personel** dengan CRUD, pencarian, filter, dan ekspor (CSV/Excel/PDF)
-- ✅ **Pendidikan & Pelatihan** dengan tracking sertifikat dan peringatan masa berlaku
-- ✅ **Peta Sebaran** interaktif dengan React Leaflet
-- ✅ **Notifikasi** dengan kategorisasi dan status baca
-- ✅ **Log Aktivitas** (audit trail) untuk tracking semua aksi pengguna
-- ✅ **Manajemen User** dengan RBAC (Role-Based Access Control)
-- ✅ **Persistensi LocalStorage** - data tersimpan otomatis
-- ✅ **Dark Mode** support
-- ✅ **Responsive Design**
+    - ✅ **Dashboard** dengan KPI, grafik distribusi, dan tren keluhan
+    - ✅ **Manajemen Personel** dengan CRUD, pencarian, filter, dan ekspor (CSV/Excel/PDF)
+    - ✅ **Pendidikan & Pelatihan** dengan tracking sertifikat dan peringatan masa berlaku
+    - ✅ **Peta Sebaran** interaktif dengan React Leaflet
+    - ✅ **Notifikasi** dengan kategorisasi dan status baca
+    - ✅ **Log Aktivitas** (audit trail) untuk tracking semua aksi pengguna
+    - ✅ **Manajemen User** dengan RBAC (Role-Based Access Control)
+    - ✅ **Persistensi LocalStorage** - data tersimpan otomatis
+    - ✅ **Dark Mode** support
+    - ✅ **Responsive Design**
+    - ✅ **E-RM Portabilitas** - Rekaman Medis Elektronik lintas satuan
+    - ✅ **Portal Faskes** - Akses lintas RSAU dengan audit trail
+    - ✅ **Rikkes Mode** - Pemeriksaan kesehatan berkala terstandarisasi
+    - ✅ **Continuity of Care** - Export ringkasan medis untuk pemindahan
 
 ## Tech Stack
 
@@ -34,22 +38,32 @@ Sistem Informasi Bina Profesional Kesehatan TNI Angkatan Udara.
 - Akses penuh ke semua fitur
 - Dapat mengelola semua data
 - Dapat mengelola user dan role
+- Akses E-RM penuh tanpa justifikasi
 
 ### AdminSatuan
 - CRUD personel pada satuannya
 - Read-only untuk satuan lain
 - Akses log aktivitas
 - Tidak dapat mengelola user
+- Akses E-RM penuh tanpa justifikasi
 
 ### Operator
 - Hanya dapat menambah (create) data personel
 - Tidak dapat edit atau delete
 - Read-only untuk fitur lainnya
+- Akses E-RM penuh tanpa justifikasi
 
 ### Viewer
 - Read-only untuk semua fitur
 - Dapat melihat dashboard, peta, dan laporan
 - Tidak dapat mengubah data
+- Tidak memiliki akses E-RM
+
+### Puskesau
+- Akses E-RM dengan justifikasi wajib
+- Dapat melakukan Rikkes
+- Akses lintas RSAU tercatat dalam audit trail
+- Harus memilih alasan akses (Rikkes/Dikbangum/Rujukan/Lanjutan)
 
 ## Demo Akun
 
@@ -77,6 +91,7 @@ Atau gunakan kredensial berikut untuk login manual:
 | AdminSatuan | admin.halim@binprofkes.mil.id | admin123 |
 | Operator | operator@binprofkes.mil.id | operator123 |
 | Viewer | viewer@binprofkes.mil.id | viewer123 |
+| Puskesau | puskesau.jakarta@binprofkes.mil.id | puskesau123 |
 | **Bypass** | **bypass@binprofkes.mil.id** | **bypass123** |
 
 ## Instalasi & Menjalankan
@@ -152,6 +167,10 @@ Keys yang digunakan:
 - `binprofkes:notifikasi` - Notifikasi
 - `binprofkes:audit` - Audit log
 - `binprofkes:currentUser` - User yang sedang login
+- `binprofkes:rekam_medis` - Data rekam medis (E-RM)
+- `binprofkes:rekam_rikkes` - Data Rikkes
+- `binprofkes:akses_fasilitas` - Log akses lintas fasilitas
+- `binprofkes:continuity_of_care` - Data export Continuity of Care
 
 ## Peta Interaktif
 
