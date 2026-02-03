@@ -133,6 +133,35 @@ export function ElektronikRecordMedisPage() {
         )}
       </div>
 
+      <Card className="border-sky-200/80 bg-sky-50/70 dark:bg-sky-950/30">
+        <CardHeader>
+          <CardTitle className="flex items-center gap-2 text-sky-900 dark:text-sky-100">
+            <History className="h-5 w-5 text-sky-600" />
+            Ringkasan Portabilitas Saat Mutasi Pindah Tugas
+          </CardTitle>
+        </CardHeader>
+        <CardContent className="text-sm text-sky-900/90 dark:text-sky-100/90">
+          <ul className="list-disc space-y-2 pl-5">
+            <li>Akses E-RM tetap aktif walau pindah satuan (berbasis identitas pasien, bukan lokasi).</li>
+            <li>Riwayat lintas fasilitas RSAU (single longitudinal record).</li>
+            <li>Export ringkasan medis (Continuity of Care Summary) untuk dibawa ke fasilitas lain.</li>
+            <li>Portal Faskes TNI AU (Puskesau &amp; RSAU) – akses lintas RS.</li>
+            <li>Role-based access untuk Puskesau (melihat E-RM saat rikkes/dikbangum/lanjutan).</li>
+            <li>Pencarian pasien terkontrol (berdasarkan NRP/NIK + alasan akses).</li>
+            <li>Viewer E-RM lintas RSAU (timeline, hasil penunjang, resume medis).</li>
+            <li>
+              Fitur “Rikkes Mode”:
+              <ul className="list-disc space-y-1 pl-5 pt-2">
+                <li>Template pemeriksaan rikkes.</li>
+                <li>Lampiran hasil penunjang.</li>
+                <li>Auto-generate resume rikkes.</li>
+              </ul>
+            </li>
+            <li>Audit trail &amp; justifikasi akses (wajib pilih alasan: rikkes/dikbangum/rujukan/lanjutan, dsb.).</li>
+          </ul>
+        </CardContent>
+      </Card>
+
       {isPuskesau && (
         <Card className="border-amber-200 bg-amber-50 dark:bg-amber-950">
           <CardContent className="pt-6">
