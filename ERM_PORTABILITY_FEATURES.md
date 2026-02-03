@@ -4,6 +4,21 @@
 
 This document describes the Electronic Medical Record (E-RM) portability and cross-facility access features implemented for the BINPROFKES system, enabling seamless medical record continuity across RSAU and Puskesau facilities in the Indonesian Air Force (TNI AU).
 
+## Ringkasan Portabilitas Saat Mutasi Pindah Tugas
+
+- Akses E-RM tetap aktif walau pindah satuan (berbasis identitas pasien, bukan lokasi).
+- Riwayat lintas fasilitas RSAU (single longitudinal record).
+- Export ringkasan medis (Continuity of Care Summary) untuk dibawa ke fasilitas lain.
+- Portal Faskes TNI AU (Puskesau & RSAU) – akses lintas RS.
+- Role-based access untuk Puskesau (melihat E-RM saat rikkes/dikbangum/lanjutan).
+- Pencarian pasien terkontrol (berdasarkan NRP/NIK + alasan akses).
+- Viewer E-RM lintas RSAU (timeline, hasil penunjang, resume medis).
+- Fitur “Rikkes Mode”:
+  - Template pemeriksaan rikkes.
+  - Lampiran hasil penunjang.
+  - Auto-generate resume rikkes.
+- Audit trail & justifikasi akses (wajib pilih alasan: rikkes/dikbangum/rujukan/lanjutan, dsb.).
+
 ## Features Implemented
 
 ### 1. E-RM Portability During Unit Transfer
