@@ -6,7 +6,7 @@ import { Badge } from '@/components/ui/badge';
 import { Repository } from '@/services/repository';
 import { Personel } from '@/types/models';
 import { useAuthStore } from '@/store/authStore';
-import { Search, FileText, Download, Activity, Crosshair, History, Shield, CheckCircle, AlertCircle } from 'lucide-react';
+import { Search, FileText, Download, Crosshair, History, Shield, AlertCircle } from 'lucide-react';
 import { ermService } from '@/services/erm';
 import { TimelineEvent } from '@/types/models';
 import { ERMViewerModal } from '@/components/erm/ERMViewerModal';
@@ -20,7 +20,7 @@ const personelRepo = new Repository<Personel>('personel', 'Personel');
 
 export function ElektronikRecordMedisPage() {
   const { user } = useAuthStore();
-  const [personel, setPersonel] = useState<Personel[]>(personelRepo.getAll());
+  const [personel] = useState<Personel[]>(personelRepo.getAll());
   const [search, setSearch] = useState('');
   const [searchType, setSearchType] = useState<'nama' | 'nrp'>('nrp');
   const [selectedPersonel, setSelectedPersonel] = useState<Personel | null>(null);
@@ -29,7 +29,7 @@ export function ElektronikRecordMedisPage() {
   const [crossAccessOpen, setCrossAccessOpen] = useState(false);
   const [cocExportOpen, setCocExportOpen] = useState(false);
   const [rikkesModalOpen, setRikkesModalOpen] = useState(false);
-  const [isPuskesau, setIsPuskesau] = useState(user?.role === 'Puskesau');
+  const isPuskesau = user?.role === 'Puskesau';
 
   const filteredPersonel = useMemo(() => {
     return personel.filter(p => {
@@ -40,8 +40,6 @@ export function ElektronikRecordMedisPage() {
       }
     });
   }, [personel, search, searchType]);
-
-  const canAccess = user?.role === 'SuperAdmin' || user?.role === 'AdminSatuan' || user?.role === 'Operator' || user?.role === 'Puskesau';
 
   const handleViewERM = (p: Personel) => {
     setSelectedPersonel(p);

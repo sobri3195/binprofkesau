@@ -3,7 +3,6 @@ import { X, Stethoscope, CheckCircle, AlertCircle, FileText, Printer } from 'luc
 import { Button } from '@/components/ui/button';
 import { Input } from '@/components/ui/input';
 import { Card } from '@/components/ui/card';
-import { Badge } from '@/components/ui/badge';
 import { useState } from 'react';
 import { rikkesService } from '@/services/rikkes';
 import { useAuthStore } from '@/store/authStore';

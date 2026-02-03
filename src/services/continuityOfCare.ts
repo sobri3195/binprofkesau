@@ -1,7 +1,7 @@
 import { v4 as uuidv4 } from './uuid';
 import { StorageService } from './storage';
 import { AuditService } from './audit';
-import { ContinuityOfCare, Personel } from '@/types/models';
+import { ContinuityOfCare } from '@/types/models';
 import { ermService } from './erm';
 import { rikkesService } from './rikkes';
 
@@ -176,7 +176,6 @@ class ContinuityOfCareService {
     userId: string,
     catatanPemindahan?: string
   ): ContinuityOfCare {
-    const ermRecords = ermService.getByPersonelIdAcrossFacilities(personelId);
     const latestRikkes = rikkesService.getLatestRikkes(personelId);
 
     const riwayatDiagnosa = ermService.getDiagnosisHistory(personelId);

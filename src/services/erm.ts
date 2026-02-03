@@ -1,7 +1,7 @@
 import { v4 as uuidv4 } from './uuid';
 import { StorageService } from './storage';
 import { AuditService } from './audit';
-import { RekamMedis, JenisPemeriksaan, StatusRekamMedis, TimelineEvent } from '@/types/models';
+import { RekamMedis, JenisPemeriksaan, TimelineEvent } from '@/types/models';
 
 class ERMService {
   private readonly REKAM_MEDIS_KEY = 'rekam_medis';
