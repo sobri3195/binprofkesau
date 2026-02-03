@@ -1,7 +1,10 @@
 import { v4 as uuidv4 } from './uuid';
 import { StorageService } from './storage';
 import { AuditService } from './audit';
-import { RekamRikkes, JenisRikkes, StatusRikkes, KesimpulanRikkes } from '@/types/models';
+import { RekamRikkes } from '@/types/models';
+
+type ResumeMedisData = Omit<RekamRikkes, 'id' | 'createdAt' | 'updatedAt' | 'resumeMedis'> &
+  Partial<Pick<RekamRikkes, 'id' | 'createdAt' | 'updatedAt' | 'resumeMedis'>>;
 
 class RikkesService {
   private readonly REKAM_RIKKES_KEY = 'rekam_rikkes';
@@ -88,7 +91,7 @@ class RikkesService {
     return true;
   }
 
-  generateResumeMedis(data: RekamRikkes): string {
+  generateResumeMedis(data: ResumeMedisData): string {
     const parts: string[] = [];
 
     parts.push(`RIKKES - ${data.jenisRikkes} Tahun ${data.tahunRikkes}`);

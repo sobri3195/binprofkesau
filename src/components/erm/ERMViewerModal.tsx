@@ -1,9 +1,8 @@
 import { Personel, TimelineEvent } from '@/types/models';
-import { X, Clock, Activity, FileText, Building2, Calendar, Filter } from 'lucide-react';
+import { X, Clock, Activity, Building2, Calendar, Filter } from 'lucide-react';
 import { Badge } from '@/components/ui/badge';
 import { Card } from '@/components/ui/card';
 import { useState } from 'react';
-import { ermService } from '@/services/erm';
 
 interface ERMViewerModalProps {
   isOpen: boolean;

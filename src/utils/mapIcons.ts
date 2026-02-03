@@ -8,6 +8,7 @@ const FACILITY_COLORS: Record<JenisFasilitas, string> = {
   Kodau: '#8b5cf6', // purple
   Koopsau: '#10b981', // green
   Satrad: '#f59e0b', // amber
+  Puskesau: '#0ea5e9', // sky
 };
 
 // Create custom marker icon with color
