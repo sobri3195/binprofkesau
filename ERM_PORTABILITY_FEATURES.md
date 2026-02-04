@@ -21,6 +21,27 @@ This document describes the Electronic Medical Record (E-RM) portability and cro
 
 ## Features Implemented
 
+### Ringkasan Kebutuhan Portabilitas & Akses Lintas Fasilitas
+
+#### Portabilitas Saat Mutasi/Pindah Tugas
+- **Akses E-RM tetap aktif** walau personel pindah satuan karena berbasis identitas pasien, bukan lokasi.
+- **Riwayat lintas fasilitas RSAU** terjaga sebagai single longitudinal record.
+- **Export ringkasan medis (Continuity of Care Summary)** untuk dibawa ke fasilitas lain saat mutasi/rujukan.
+
+#### Portal Faskes TNI AU (Puskesau & RSAU) – Akses Lintas RS
+- **Role-based access untuk Puskesau**: akses E-RM saat rikkes/dikbangum/lanjutan.
+- **Pencarian pasien terkontrol**: berbasis NRP/NIK + alasan akses.
+- **Viewer E-RM lintas RSAU**: timeline, hasil penunjang, dan resume medis.
+
+#### Fitur “Rikkes Mode”
+- **Template pemeriksaan rikkes** yang terstandar.
+- **Lampiran hasil penunjang** (lab, radiologi, EKG, dll.).
+- **Auto-generate resume rikkes** untuk ringkasan hasil pemeriksaan.
+
+#### Audit Trail & Justifikasi Akses
+- **Audit trail wajib** untuk seluruh akses lintas fasilitas.
+- **Justifikasi akses wajib dipilih** (contoh: rikkes/dikbangum/rujukan/lanjutan, dsb.).
+
 ### 1. E-RM Portability During Unit Transfer
 
 #### Identity-Based Records (Not Location-Based)
