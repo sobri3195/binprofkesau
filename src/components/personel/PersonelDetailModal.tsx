@@ -261,6 +261,25 @@ export function PersonelDetailModal({
                   <label className="block text-sm font-medium text-gray-700 mb-1">Status</label>
                   <Input value={personel.status} disabled />
                 </div>
+                <div>
+                  <label className="block text-sm font-medium text-gray-700 mb-1">Status BP</label>
+                  <Input value={personel.statusBP || '-'} disabled />
+                </div>
+                <div>
+                  <label className="block text-sm font-medium text-gray-700 mb-1">Kenaikan Pangkat Berikutnya</label>
+                  <Input
+                    value={
+                      personel.tanggalKenaikanPangkatBerikutnya
+                        ? new Date(personel.tanggalKenaikanPangkatBerikutnya).toLocaleDateString('id-ID')
+                        : '-'
+                    }
+                    disabled
+                  />
+                </div>
+                <div>
+                  <label className="block text-sm font-medium text-gray-700 mb-1">Status Pindah Satuan</label>
+                  <Input value={personel.sudahPindahSatuan === false ? 'Belum Pindah' : 'Sudah Pindah'} disabled />
+                </div>
               </div>
             </div>
           )}

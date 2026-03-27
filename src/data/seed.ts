@@ -71,6 +71,9 @@ const personel: Personel[] = [
     status: 'Aktif',
     jabatan: 'Kepala Klinik',
     pekerjaan: 'Dokter',
+    statusBP: 'Memenuhi',
+    tanggalKenaikanPangkatBerikutnya: '2026-04-15',
+    sudahPindahSatuan: true,
     keluhanBulanan: [
       { month: '2024-01', count: 45 },
       { month: '2024-02', count: 52 },
@@ -89,6 +92,9 @@ const personel: Personel[] = [
     status: 'Aktif',
     jabatan: 'Dokter Gigi',
     pekerjaan: 'Dokter Gigi',
+    statusBP: 'Perlu Pembinaan',
+    tanggalKenaikanPangkatBerikutnya: '2026-05-01',
+    sudahPindahSatuan: false,
     keluhanBulanan: [
       { month: '2024-01', count: 30 },
       { month: '2024-02', count: 35 },
@@ -107,6 +113,9 @@ const personel: Personel[] = [
     status: 'Aktif',
     jabatan: 'Perawat',
     pekerjaan: 'Perawat',
+    statusBP: 'Memenuhi',
+    tanggalKenaikanPangkatBerikutnya: '2026-09-10',
+    sudahPindahSatuan: true,
     keluhanBulanan: [
       { month: '2024-01', count: 60 },
       { month: '2024-02', count: 65 },
@@ -125,6 +134,9 @@ const personel: Personel[] = [
     status: 'Aktif',
     jabatan: 'Spesialis Penyakit Dalam',
     pekerjaan: 'Spesialis',
+    statusBP: 'Memenuhi',
+    tanggalKenaikanPangkatBerikutnya: '2026-04-05',
+    sudahPindahSatuan: true,
     keluhanBulanan: [
       { month: '2024-01', count: 40 },
       { month: '2024-02', count: 38 },
@@ -143,6 +155,9 @@ const personel: Personel[] = [
     status: 'Aktif',
     jabatan: 'Asisten Perawat',
     pekerjaan: 'Perawat',
+    statusBP: 'Belum Memenuhi',
+    tanggalKenaikanPangkatBerikutnya: '2026-06-20',
+    sudahPindahSatuan: false,
     keluhanBulanan: [
       { month: '2024-01', count: 55 },
       { month: '2024-02', count: 50 },
@@ -161,6 +176,9 @@ const personel: Personel[] = [
     status: 'Dinas Belajar',
     jabatan: 'Dokter Umum',
     pekerjaan: 'Dokter',
+    statusBP: 'Perlu Pembinaan',
+    tanggalKenaikanPangkatBerikutnya: '2026-04-02',
+    sudahPindahSatuan: false,
     keluhanBulanan: [
       { month: '2024-01', count: 20 },
       { month: '2024-02', count: 15 },
@@ -179,6 +197,9 @@ const personel: Personel[] = [
     status: 'Aktif',
     jabatan: 'Kepala Perawat',
     pekerjaan: 'Perawat',
+    statusBP: 'Memenuhi',
+    tanggalKenaikanPangkatBerikutnya: '2026-07-01',
+    sudahPindahSatuan: true,
     keluhanBulanan: [
       { month: '2024-01', count: 48 },
       { month: '2024-02', count: 52 },
@@ -197,6 +218,9 @@ const personel: Personel[] = [
     status: 'Aktif',
     jabatan: 'Dokter Gigi Senior',
     pekerjaan: 'Dokter Gigi',
+    statusBP: 'Perlu Pembinaan',
+    tanggalKenaikanPangkatBerikutnya: '2026-04-28',
+    sudahPindahSatuan: true,
     keluhanBulanan: [
       { month: '2024-01', count: 28 },
       { month: '2024-02', count: 30 },
@@ -215,6 +239,9 @@ const personel: Personel[] = [
     status: 'Aktif',
     jabatan: 'Spesialis Anak',
     pekerjaan: 'Spesialis',
+    statusBP: 'Memenuhi',
+    tanggalKenaikanPangkatBerikutnya: '2026-10-15',
+    sudahPindahSatuan: true,
     keluhanBulanan: [
       { month: '2024-01', count: 35 },
       { month: '2024-02', count: 38 },
@@ -233,6 +260,9 @@ const personel: Personel[] = [
     status: 'Aktif',
     jabatan: 'Perawat',
     pekerjaan: 'Perawat',
+    statusBP: 'Belum Memenuhi',
+    tanggalKenaikanPangkatBerikutnya: '2026-05-12',
+    sudahPindahSatuan: false,
     keluhanBulanan: [
       { month: '2024-01', count: 42 },
       { month: '2024-02', count: 45 },

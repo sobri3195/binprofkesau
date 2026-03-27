@@ -5,9 +5,9 @@ import { Input } from '@/components/ui/input';
 import { Badge } from '@/components/ui/badge';
 import { Repository } from '@/services/repository';
 import { ExportService } from '@/services/export';
-import { Personel, Pangkat } from '@/types/models';
+import { Personel, Pangkat, StatusBP } from '@/types/models';
 import { useAuthStore } from '@/store/authStore';
-import { Plus, Download, Search, Pencil, Trash2, Eye, Phone, Award, Briefcase } from 'lucide-react';
+import { Plus, Download, Search, Pencil, Trash2, Eye, Phone, Award, Briefcase, CalendarClock, ArrowRightLeft } from 'lucide-react';
 import { PersonelDetailModal } from '@/components/personel/PersonelDetailModal';
 
 const personelRepo = new Repository<Personel>('personel', 'Personel');
@@ -17,6 +17,8 @@ export function PersonelPage() {
   const [personel, setPersonel] = useState<Personel[]>(personelRepo.getAll());
   const [search, setSearch] = useState('');
   const [filterPangkat, setFilterPangkat] = useState<Pangkat | ''>('');
+  const [filterStatusBP, setFilterStatusBP] = useState<StatusBP | ''>('');
+  const [showBelumPindah, setShowBelumPindah] = useState(false);
   const [selectedPersonel, setSelectedPersonel] = useState<Personel | null>(null);
   const [isModalOpen, setIsModalOpen] = useState(false);
   const [modalMode, setModalMode] = useState<'view' | 'edit'>('view');
@@ -31,13 +33,30 @@ export function PersonelPage() {
         p.nama.toLowerCase().includes(search.toLowerCase()) ||
         p.nrp.includes(search);
       const matchesPangkat = !filterPangkat || p.pangkat === filterPangkat;
+      const matchesStatusBP = !filterStatusBP || p.statusBP === filterStatusBP;
+      const matchesBelumPindah = showBelumPindah ? p.sudahPindahSatuan === false : true;
       const matchesSatuan = user?.role === 'AdminSatuan' 
         ? p.satuan === user.satuan 
         : true;
 
-      return matchesSearch && matchesPangkat && matchesSatuan;
+      return matchesSearch && matchesPangkat && matchesStatusBP && matchesBelumPindah && matchesSatuan;
     });
-  }, [personel, search, filterPangkat, user]);
+  }, [personel, search, filterPangkat, filterStatusBP, showBelumPindah, user]);
+
+  const pengingatKenaikanPangkat = useMemo(() => {
+    const now = new Date();
+    const batasHari = 90;
+
+    return filteredPersonel
+      .filter((p) => p.tanggalKenaikanPangkatBerikutnya)
+      .map((p) => {
+        const tanggal = new Date(p.tanggalKenaikanPangkatBerikutnya as string);
+        const selisihHari = Math.ceil((tanggal.getTime() - now.getTime()) / (1000 * 60 * 60 * 24));
+        return { ...p, selisihHari, tanggal };
+      })
+      .filter((p) => p.selisihHari >= 0 && p.selisihHari <= batasHari)
+      .sort((a, b) => a.selisihHari - b.selisihHari);
+  }, [filteredPersonel]);
 
   const handleDelete = (id: string) => {
     if (!user) return;
@@ -52,7 +71,7 @@ export function PersonelPage() {
     ExportService.exportToCSV(
       filteredPersonel,
       'personel-binprofkes',
-      ['nrp', 'nama', 'pangkat', 'korps', 'satuan', 'jabatan', 'pekerjaan', 'status']
+      ['nrp', 'nama', 'pangkat', 'korps', 'satuan', 'jabatan', 'pekerjaan', 'status', 'statusBP', 'tanggalKenaikanPangkatBerikutnya', 'sudahPindahSatuan']
     );
   };
 
@@ -60,7 +79,7 @@ export function PersonelPage() {
     ExportService.exportToExcel(
       filteredPersonel,
       'personel-binprofkes',
-      ['nrp', 'nama', 'pangkat', 'korps', 'satuan', 'jabatan', 'pekerjaan', 'status']
+      ['nrp', 'nama', 'pangkat', 'korps', 'satuan', 'jabatan', 'pekerjaan', 'status', 'statusBP', 'tanggalKenaikanPangkatBerikutnya', 'sudahPindahSatuan']
     );
   };
 
@@ -77,6 +96,8 @@ export function PersonelPage() {
         { header: 'Jabatan', dataKey: 'jabatan' },
         { header: 'Pekerjaan', dataKey: 'pekerjaan' },
         { header: 'Status', dataKey: 'status' },
+        { header: 'Status BP', dataKey: 'statusBP' },
+        { header: 'Kenaikan Pangkat', dataKey: 'tanggalKenaikanPangkatBerikutnya' },
       ]
     );
   };
@@ -156,6 +177,27 @@ export function PersonelPage() {
                 <option value="Bintara">Bintara</option>
                 <option value="Perwira">Perwira</option>
               </select>
+
+              <select
+                value={filterStatusBP}
+                onChange={(e) => setFilterStatusBP(e.target.value as StatusBP | '')}
+                className="rounded-md border border-input bg-background px-3 py-2 text-sm w-full sm:w-auto"
+              >
+                <option value="">Semua Status BP</option>
+                <option value="Memenuhi">Memenuhi</option>
+                <option value="Perlu Pembinaan">Perlu Pembinaan</option>
+                <option value="Belum Memenuhi">Belum Memenuhi</option>
+              </select>
+            </div>
+            <div className="flex flex-wrap gap-2">
+              <Button
+                variant={showBelumPindah ? 'default' : 'outline'}
+                size="sm"
+                onClick={() => setShowBelumPindah((prev) => !prev)}
+              >
+                <ArrowRightLeft className="w-4 h-4 mr-1" />
+                {showBelumPindah ? 'Tampilkan Semua Satuan' : 'Hanya Belum Pindah Satuan'}
+              </Button>
             </div>
 
             <div className="flex gap-2 overflow-x-auto pb-1">
@@ -174,6 +216,22 @@ export function PersonelPage() {
             </div>
           </div>
 
+          {pengingatKenaikanPangkat.length > 0 && (
+            <div className="mb-4 rounded-md border bg-amber-50 p-3">
+              <div className="flex items-center gap-2 mb-2">
+                <CalendarClock className="h-4 w-4 text-amber-600" />
+                <p className="text-sm font-semibold text-amber-900">Pengingat Kenaikan Pangkat (≤ 90 hari)</p>
+              </div>
+              <div className="space-y-1">
+                {pengingatKenaikanPangkat.slice(0, 5).map((p) => (
+                  <p key={p.id} className="text-sm text-amber-900">
+                    {p.nama} ({p.nrp}) - {p.selisihHari} hari lagi ({new Date(p.tanggalKenaikanPangkatBerikutnya as string).toLocaleDateString('id-ID')})
+                  </p>
+                ))}
+              </div>
+            </div>
+          )}
+
           {/* Desktop Table */}
           <div className="hidden md:block rounded-md border">
             <div className="overflow-x-auto">
@@ -187,13 +245,15 @@ export function PersonelPage() {
                     <th className="px-4 py-3 text-left text-sm font-medium">Satuan</th>
                     <th className="px-4 py-3 text-left text-sm font-medium">Jabatan</th>
                     <th className="px-4 py-3 text-left text-sm font-medium">Status</th>
+                    <th className="px-4 py-3 text-left text-sm font-medium">Status BP</th>
+                    <th className="px-4 py-3 text-left text-sm font-medium">Pindah Satuan</th>
                     <th className="px-4 py-3 text-right text-sm font-medium">Aksi</th>
                   </tr>
                 </thead>
                 <tbody className="divide-y">
                   {filteredPersonel.length === 0 ? (
                     <tr>
-                      <td colSpan={8} className="px-4 py-8 text-center text-sm text-muted-foreground">
+                      <td colSpan={10} className="px-4 py-8 text-center text-sm text-muted-foreground">
                         Tidak ada data personel
                       </td>
                     </tr>
@@ -217,6 +277,20 @@ export function PersonelPage() {
                         <td className="px-4 py-3 text-sm">
                           <Badge variant={p.status === 'Aktif' ? 'success' : 'warning'}>
                             {p.status}
+                          </Badge>
+                        </td>
+                        <td className="px-4 py-3 text-sm">
+                          <Badge variant={
+                            p.statusBP === 'Memenuhi' ? 'success' :
+                            p.statusBP === 'Perlu Pembinaan' ? 'warning' :
+                            'destructive'
+                          }>
+                            {p.statusBP || '-'}
+                          </Badge>
+                        </td>
+                        <td className="px-4 py-3 text-sm">
+                          <Badge variant={p.sudahPindahSatuan === false ? 'warning' : 'outline'}>
+                            {p.sudahPindahSatuan === false ? 'Belum Pindah' : 'Sudah Pindah'}
                           </Badge>
                         </td>
                         <td className="px-4 py-3 text-right">
@@ -285,6 +359,24 @@ export function PersonelPage() {
                         <div>
                           <span className="text-gray-500">Korps:</span>
                           <p className="font-medium text-gray-900 mt-1">{p.korps}</p>
+                        </div>
+                        <div>
+                          <span className="text-gray-500">Status BP:</span>
+                          <div className="mt-1">
+                            <Badge variant={
+                              p.statusBP === 'Memenuhi' ? 'success' :
+                              p.statusBP === 'Perlu Pembinaan' ? 'warning' :
+                              'destructive'
+                            } className="text-xs">
+                              {p.statusBP || '-'}
+                            </Badge>
+                          </div>
+                        </div>
+                        <div>
+                          <span className="text-gray-500">Pindah Satuan:</span>
+                          <p className="font-medium text-gray-900 mt-1">
+                            {p.sudahPindahSatuan === false ? 'Belum Pindah' : 'Sudah Pindah'}
+                          </p>
                         </div>
                         <div className="col-span-2">
                           <span className="text-gray-500">Satuan:</span>

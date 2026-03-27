@@ -1,4 +1,5 @@
 export type Pangkat = "Tamtama" | "Bintara" | "Perwira";
+export type StatusBP = "Memenuhi" | "Perlu Pembinaan" | "Belum Memenuhi";
 export type StatusSertifikat = "Berlaku" | "Akan Berakhir" | "Kedaluwarsa";
 export type StatusPelaksanaan = "Sudah Melaksanakan" | "Belum Melaksanakan";
 export type KategoriNotifikasi = "Informasi" | "Peringatan" | "Pembaruan" | "Belum sekolah" | "Belum pindah" | "Belum PPDS";
@@ -61,6 +62,9 @@ export interface Personel {
   status: string;
   jabatan: string;
   pekerjaan: string;
+  statusBP?: StatusBP;
+  tanggalKenaikanPangkatBerikutnya?: string;
+  sudahPindahSatuan?: boolean;
   noHP?: string;
   keluhanBulanan?: Array<{ month: string; count: number }>;
   riwayatKedinasan?: RiwayatKedinasan[];
