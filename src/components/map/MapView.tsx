@@ -1,4 +1,4 @@
-import { useEffect, useRef, useMemo } from 'react';
+import { useCallback, useEffect, useRef, useMemo } from 'react';
 import { MapContainer, TileLayer, useMap } from 'react-leaflet';
 import L from 'leaflet';
 import 'leaflet/dist/leaflet.css';
@@ -32,9 +32,17 @@ function MapController({
 }) {
   const map = useMap();
   const clusterGroupRef = useRef<L.MarkerClusterGroup | null>(null);
+  const escapeHtml = useCallback((value: string) => {
+    return value
+      .replace(/&/g, '&amp;')
+      .replace(/</g, '&lt;')
+      .replace(/>/g, '&gt;')
+      .replace(/"/g, '&quot;')
+      .replace(/'/g, '&#39;');
+  }, []);
 
   // Find matched doctors based on search query
-  const getMatchedDoctors = (facility: Fasilitas): Dokter[] => {
+  const getMatchedDoctors = useCallback((facility: Fasilitas): Dokter[] => {
     if (!searchQuery || !facility.dokterList) return [];
     const searchLower = searchQuery.toLowerCase();
     return facility.dokterList.filter(
@@ -42,7 +50,7 @@ function MapController({
         d.nama.toLowerCase().includes(searchLower) ||
         (d.spesialisasi && d.spesialisasi.toLowerCase().includes(searchLower))
     );
-  };
+  }, [searchQuery]);
 
   useEffect(() => {
     // Initialize cluster group
@@ -83,13 +91,22 @@ function MapController({
 
         // Create popup content
         const popupDiv = document.createElement('div');
+        const dokterListHtml = (f.dokterList || [])
+          .map((dokter) => `
+            <div class="text-sm p-2 rounded ${matchedDoctors.some(d => d.id === dokter.id) ? 'bg-yellow-50 border border-yellow-300' : 'bg-gray-50'}">
+              <div class="font-semibold">${escapeHtml(dokter.nama)}</div>
+              ${dokter.spesialisasi ? `<div class="text-xs text-gray-500">${escapeHtml(dokter.spesialisasi)}</div>` : ''}
+              ${dokter.aktif ? '<span class="inline-flex items-center rounded-md bg-blue-50 px-2 py-1 text-xs font-medium text-blue-700 mt-1">Aktif</span>' : ''}
+            </div>
+          `).join('');
+
         popupDiv.innerHTML = `
           <div class="min-w-[280px] max-w-[350px]">
             <div class="border-b pb-2 mb-3">
-              <h3 class="font-bold text-lg mb-2">${f.nama}</h3>
+              <h3 class="font-bold text-lg mb-2">${escapeHtml(f.nama)}</h3>
               <div class="flex gap-2 flex-wrap">
-                <span class="inline-flex items-center rounded-md bg-blue-50 px-2 py-1 text-xs font-medium text-blue-700 ring-1 ring-inset ring-blue-700/10">${f.jenis}</span>
-                <span class="inline-flex items-center rounded-md bg-gray-50 px-2 py-1 text-xs font-medium text-gray-600 ring-1 ring-inset ring-gray-500/10">${f.komando}</span>
+                <span class="inline-flex items-center rounded-md bg-blue-50 px-2 py-1 text-xs font-medium text-blue-700 ring-1 ring-inset ring-blue-700/10">${escapeHtml(f.jenis)}</span>
+                <span class="inline-flex items-center rounded-md bg-gray-50 px-2 py-1 text-xs font-medium text-gray-600 ring-1 ring-inset ring-gray-500/10">${escapeHtml(f.komando)}</span>
               </div>
             </div>
             <div class="grid grid-cols-2 gap-2 mb-3 text-sm">
@@ -103,19 +120,13 @@ function MapController({
               <div class="border-t pt-3">
                 <h4 class="font-semibold text-sm mb-2">Daftar Dokter:</h4>
                 <div class="max-h-[200px] overflow-y-auto space-y-2">
-                  ${f.dokterList.map((dokter) => `
-                    <div class="text-sm p-2 rounded ${matchedDoctors.some(d => d.id === dokter.id) ? 'bg-yellow-50 border border-yellow-300' : 'bg-gray-50'}">
-                      <div class="font-semibold">${dokter.nama}</div>
-                      ${dokter.spesialisasi ? `<div class="text-xs text-gray-500">${dokter.spesialisasi}</div>` : ''}
-                      ${dokter.aktif ? '<span class="inline-flex items-center rounded-md bg-blue-50 px-2 py-1 text-xs font-medium text-blue-700 mt-1">Aktif</span>' : ''}
-                    </div>
-                  `).join('')}
+                  ${dokterListHtml}
                 </div>
               </div>
             ` : ''}
             ${matchedDoctors.length > 0 ? `
               <div class="mt-3 p-2 bg-yellow-50 border border-yellow-300 rounded text-xs">
-                <strong>Cocok:</strong> ${matchedDoctors.map(d => d.nama).join(', ')}
+                <strong>Cocok:</strong> ${matchedDoctors.map(d => escapeHtml(d.nama)).join(', ')}
               </div>
             ` : ''}
           </div>
@@ -138,7 +149,7 @@ function MapController({
       );
       map.fitBounds(bounds, { padding: [50, 50], maxZoom: 12 });
     }
-  }, [fasilitas, highlightedIds, map, onFacilitySelect, searchQuery]);
+  }, [escapeHtml, fasilitas, getMatchedDoctors, highlightedIds, map, onFacilitySelect]);
 
   useEffect(() => {
     // Pan to selected facility and open popup

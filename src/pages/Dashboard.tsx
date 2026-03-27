@@ -22,8 +22,8 @@ import {
 const COLORS = ['#3b82f6', '#10b981', '#f59e0b', '#ef4444', '#8b5cf6', '#ec4899'];
 
 export function Dashboard() {
-  const personel = StorageService.get<Personel[]>('personel') || [];
-  const fasilitas = StorageService.get<Fasilitas[]>('fasilitas') || [];
+  const personel = useMemo(() => StorageService.get<Personel[]>('personel') || [], []);
+  const fasilitas = useMemo(() => StorageService.get<Fasilitas[]>('fasilitas') || [], []);
 
   const stats = useMemo(() => {
     const dokter = personel.filter(p => p.pekerjaan === 'Dokter').length;

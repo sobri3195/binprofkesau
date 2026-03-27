@@ -9,7 +9,6 @@ const fasilitasRepo = new Repository<Fasilitas>('fasilitas', 'Fasilitas');
 
 export function PetaSebaranPage() {
   const {
-    fasilitas,
     filters,
     uiPreferences,
     highlightedFacilityIds,
@@ -33,12 +32,12 @@ export function PetaSebaranPage() {
   // Get filtered fasilitas
   const filteredFasilitas = useMemo(() => {
     return getFilteredFasilitas();
-  }, [getFilteredFasilitas, fasilitas, filters]);
+  }, [getFilteredFasilitas]);
 
   // Get all available spesialisasi
   const allSpesialisasi = useMemo(() => {
     return getAllSpesialisasi();
-  }, [getAllSpesialisasi, fasilitas]);
+  }, [getAllSpesialisasi]);
 
   // Update highlighted facilities when filters change
   useEffect(() => {
