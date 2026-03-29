@@ -18,6 +18,8 @@ export function PersonelPage() {
   const [search, setSearch] = useState('');
   const [filterPangkat, setFilterPangkat] = useState<Pangkat | ''>('');
   const [filterStatusBP, setFilterStatusBP] = useState<StatusBP | ''>('');
+  const [filterStatusDinas, setFilterStatusDinas] = useState<Personel['status'] | ''>('');
+  const [sortBy, setSortBy] = useState<'nama-asc' | 'nama-desc' | 'nrp-asc' | 'kenaikan-terdekat'>('nama-asc');
   const [showBelumPindah, setShowBelumPindah] = useState(false);
   const [selectedPersonel, setSelectedPersonel] = useState<Personel | null>(null);
   const [isModalOpen, setIsModalOpen] = useState(false);
@@ -28,20 +30,39 @@ export function PersonelPage() {
   const canDelete = user?.role === 'SuperAdmin' || user?.role === 'AdminSatuan';
 
   const filteredPersonel = useMemo(() => {
-    return personel.filter(p => {
+    const data = personel.filter(p => {
       const matchesSearch = 
         p.nama.toLowerCase().includes(search.toLowerCase()) ||
         p.nrp.includes(search);
       const matchesPangkat = !filterPangkat || p.pangkat === filterPangkat;
       const matchesStatusBP = !filterStatusBP || p.statusBP === filterStatusBP;
+      const matchesStatusDinas = !filterStatusDinas || p.status === filterStatusDinas;
       const matchesBelumPindah = showBelumPindah ? p.sudahPindahSatuan === false : true;
       const matchesSatuan = user?.role === 'AdminSatuan' 
         ? p.satuan === user.satuan 
         : true;
 
-      return matchesSearch && matchesPangkat && matchesStatusBP && matchesBelumPindah && matchesSatuan;
+      return matchesSearch && matchesPangkat && matchesStatusBP && matchesStatusDinas && matchesBelumPindah && matchesSatuan;
     });
-  }, [personel, search, filterPangkat, filterStatusBP, showBelumPindah, user]);
+
+    return [...data].sort((a, b) => {
+      if (sortBy === 'nama-asc') return a.nama.localeCompare(b.nama, 'id-ID');
+      if (sortBy === 'nama-desc') return b.nama.localeCompare(a.nama, 'id-ID');
+      if (sortBy === 'nrp-asc') return a.nrp.localeCompare(b.nrp, 'id-ID');
+
+      const tanggalA = a.tanggalKenaikanPangkatBerikutnya ? new Date(a.tanggalKenaikanPangkatBerikutnya).getTime() : Number.MAX_SAFE_INTEGER;
+      const tanggalB = b.tanggalKenaikanPangkatBerikutnya ? new Date(b.tanggalKenaikanPangkatBerikutnya).getTime() : Number.MAX_SAFE_INTEGER;
+      return tanggalA - tanggalB;
+    });
+  }, [personel, search, filterPangkat, filterStatusBP, filterStatusDinas, showBelumPindah, sortBy, user]);
+
+  const summary = useMemo(() => {
+    const aktif = filteredPersonel.filter((p) => p.status === 'Aktif').length;
+    const nonAktif = filteredPersonel.filter((p) => p.status !== 'Aktif').length;
+    const belumPindah = filteredPersonel.filter((p) => p.sudahPindahSatuan === false).length;
+
+    return { aktif, nonAktif, belumPindah };
+  }, [filteredPersonel]);
 
   const pengingatKenaikanPangkat = useMemo(() => {
     const now = new Date();
@@ -131,6 +152,15 @@ export function PersonelPage() {
     setSelectedPersonel(null);
   };
 
+  const handleResetFilter = () => {
+    setSearch('');
+    setFilterPangkat('');
+    setFilterStatusBP('');
+    setFilterStatusDinas('');
+    setShowBelumPindah(false);
+    setSortBy('nama-asc');
+  };
+
   return (
     <div className="space-y-4 sm:space-y-6">
       <div className="flex flex-col sm:flex-row sm:items-center sm:justify-between gap-3">
@@ -153,6 +183,21 @@ export function PersonelPage() {
           <CardTitle>Data Personel</CardTitle>
         </CardHeader>
         <CardContent>
+          <div className="mb-4 grid grid-cols-1 sm:grid-cols-3 gap-3">
+            <div className="rounded-md border p-3">
+              <p className="text-xs text-muted-foreground">Personel Aktif</p>
+              <p className="text-xl font-bold text-emerald-600">{summary.aktif}</p>
+            </div>
+            <div className="rounded-md border p-3">
+              <p className="text-xs text-muted-foreground">Personel Non-Aktif</p>
+              <p className="text-xl font-bold text-amber-600">{summary.nonAktif}</p>
+            </div>
+            <div className="rounded-md border p-3">
+              <p className="text-xs text-muted-foreground">Belum Pindah Satuan</p>
+              <p className="text-xl font-bold text-blue-600">{summary.belumPindah}</p>
+            </div>
+          </div>
+
           <div className="mb-4 space-y-3">
             <div className="flex flex-col sm:flex-row gap-2 sm:gap-4">
               <div className="flex-1">
@@ -188,6 +233,27 @@ export function PersonelPage() {
                 <option value="Perlu Pembinaan">Perlu Pembinaan</option>
                 <option value="Belum Memenuhi">Belum Memenuhi</option>
               </select>
+
+              <select
+                value={filterStatusDinas}
+                onChange={(e) => setFilterStatusDinas(e.target.value as Personel['status'] | '')}
+                className="rounded-md border border-input bg-background px-3 py-2 text-sm w-full sm:w-auto"
+              >
+                <option value="">Semua Status Dinas</option>
+                <option value="Aktif">Aktif</option>
+                <option value="Non-Aktif">Non-Aktif</option>
+              </select>
+
+              <select
+                value={sortBy}
+                onChange={(e) => setSortBy(e.target.value as typeof sortBy)}
+                className="rounded-md border border-input bg-background px-3 py-2 text-sm w-full sm:w-auto"
+              >
+                <option value="nama-asc">Urutkan: Nama A-Z</option>
+                <option value="nama-desc">Urutkan: Nama Z-A</option>
+                <option value="nrp-asc">Urutkan: NRP</option>
+                <option value="kenaikan-terdekat">Urutkan: Kenaikan Pangkat Terdekat</option>
+              </select>
             </div>
             <div className="flex flex-wrap gap-2">
               <Button
@@ -197,6 +263,13 @@ export function PersonelPage() {
               >
                 <ArrowRightLeft className="w-4 h-4 mr-1" />
                 {showBelumPindah ? 'Tampilkan Semua Satuan' : 'Hanya Belum Pindah Satuan'}
+              </Button>
+              <Button
+                variant="ghost"
+                size="sm"
+                onClick={handleResetFilter}
+              >
+                Reset Filter
               </Button>
             </div>
 
