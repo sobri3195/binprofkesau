@@ -195,9 +195,35 @@ Dashboard menampilkan:
 - **Pie Chart**: Distribusi per satuan (Top 5)
 - **Line Chart**: Tren keluhan kesehatan bulanan
 
+
+## Integrasi Google Apps Script (sebagai Database)
+
+Aplikasi sekarang bisa sinkron data `localStorage` ke Google Apps Script + Google Sheets.
+
+### 1) Siapkan Apps Script
+1. Buat Google Spreadsheet baru.
+2. Buka **Extensions → Apps Script**.
+3. Salin isi file `docs/google-apps-script/Code.gs` ke editor Apps Script.
+4. Deploy sebagai **Web App**:
+   - Execute as: **Me**
+   - Who has access: **Anyone** (atau sesuai kebutuhan organisasi)
+5. Salin URL Web App hasil deploy.
+
+### 2) Konfigurasi Frontend
+Isi `.env` dengan URL Web App:
+
+```bash
+VITE_GAS_WEB_APP_URL=https://script.google.com/macros/s/AKfycb.../exec
+```
+
+### 3) Cara Kerja Sinkronisasi
+- Saat aplikasi start, frontend akan mencoba `GET ?action=getAll` untuk hydrate data.
+- Setiap ada perubahan data, frontend mengirim snapshot terbaru ke Apps Script lewat `POST` action `replaceAll` (debounced).
+- Jika URL tidak diisi / Apps Script error, aplikasi tetap jalan normal dengan `localStorage`.
+
 ## Future Enhancements
 
-- [ ] Integrasi dengan REST API backend
+- [x] Integrasi sinkronisasi data dengan Google Apps Script
 - [ ] Import data dari CSV/Excel
 - [ ] Advanced filtering dengan saved views
 - [ ] Print-friendly reports
