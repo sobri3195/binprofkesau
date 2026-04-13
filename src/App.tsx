@@ -13,6 +13,7 @@ import { ElektronikRecordMedisPage } from '@/pages/ElectronikRecordMedis';
 import { AppLayout } from '@/components/layout/AppLayout';
 import { seedData } from '@/data/seed';
 import { useEffect } from 'react';
+import { StorageService } from '@/services/storage';
 
 function ProtectedRoute({ children, allowedRoles }: { children: React.ReactNode; allowedRoles?: string[] }) {
   const { isAuthenticated, user } = useAuthStore();
@@ -30,7 +31,12 @@ function ProtectedRoute({ children, allowedRoles }: { children: React.ReactNode;
 
 function App() {
   useEffect(() => {
-    seedData();
+    const initializeData = async () => {
+      await StorageService.hydrateFromRemote();
+      seedData();
+    };
+
+    void initializeData();
   }, []);
 
   return (
