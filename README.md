@@ -221,6 +221,20 @@ VITE_GAS_WEB_APP_URL=https://script.google.com/macros/s/AKfycb.../exec
 - Setiap ada perubahan data, frontend mengirim snapshot terbaru ke Apps Script lewat `POST` action `replaceAll` (debounced).
 - Jika URL tidak diisi / Apps Script error, aplikasi tetap jalan normal dengan `localStorage`.
 
+### Paket siap upload (GAS + template Excel)
+
+Untuk memudahkan upload cepat, gunakan paket di:
+
+- `docs/google-apps-script/Code.gs`
+- `docs/google-apps-script/appsscript.json`
+- `docs/google-apps-script/templates/binprofkes_db_template.csv`
+- `docs/google-apps-script/templates/binprofkes_seed_payload.json`
+- `docs/google-apps-script/templates/generate-xlsx.mjs` (untuk generate `.xlsx` lokal)
+
+Panduan langkah upload lengkap ada di:
+
+- `docs/google-apps-script/README.md`
+
 ## Future Enhancements
 
 - [x] Integrasi sinkronisasi data dengan Google Apps Script
