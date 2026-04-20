@@ -1,5 +1,11 @@
 import { useState, useEffect } from 'react';
-import { Personel, RiwayatKedinasan, RiwayatPenghargaan, RiwayatKarya } from '@/types/models';
+import {
+  Personel,
+  RiwayatKedinasan,
+  RiwayatPenghargaan,
+  RiwayatKarya,
+  RiwayatSertifikasiKompetensi,
+} from '@/types/models';
 import { Button } from '@/components/ui/button';
 import { Input } from '@/components/ui/input';
 import { X, Plus, Trash2, Phone, Award, Briefcase, FileText } from 'lucide-react';
@@ -7,7 +13,7 @@ import { v4 as uuidv4 } from '@/services/uuid';
 
 type PersonelDetailUpdate = Pick<
   Personel,
-  'noHP' | 'riwayatKedinasan' | 'riwayatPenghargaan' | 'riwayatKarya'
+  'rsauAsal' | 'noHP' | 'riwayatKedinasan' | 'riwayatSertifikasiKompetensi' | 'riwayatPenghargaan' | 'riwayatKarya'
 >;
 
 interface PersonelDetailModalProps {
@@ -19,7 +25,7 @@ interface PersonelDetailModalProps {
   canEdit: boolean;
 }
 
-type TabType = 'info' | 'phone' | 'kedinasan' | 'penghargaan' | 'karya';
+type TabType = 'info' | 'phone' | 'kedinasan' | 'sertifikasi' | 'penghargaan' | 'karya';
 
 export function PersonelDetailModal({
   isOpen,
@@ -45,8 +51,10 @@ export function PersonelDetailModal({
 
   const handleSave = () => {
     onSave({
+      rsauAsal: formData.rsauAsal,
       noHP: formData.noHP,
       riwayatKedinasan: formData.riwayatKedinasan,
+      riwayatSertifikasiKompetensi: formData.riwayatSertifikasiKompetensi,
       riwayatPenghargaan: formData.riwayatPenghargaan,
       riwayatKarya: formData.riwayatKarya,
     });
@@ -90,6 +98,36 @@ export function PersonelDetailModal({
     setFormData({
       ...formData,
       riwayatKedinasan: (formData.riwayatKedinasan || []).filter((item) => item.id !== id),
+    });
+  };
+
+  // Riwayat Sertifikasi Kompetensi handlers
+  const addSertifikasi = () => {
+    const newItem: RiwayatSertifikasiKompetensi = {
+      id: uuidv4(),
+      namaSertifikasi: '',
+      lembagaPenerbit: '',
+      tanggalTerbit: '',
+    };
+    setFormData({
+      ...formData,
+      riwayatSertifikasiKompetensi: [...(formData.riwayatSertifikasiKompetensi || []), newItem],
+    });
+  };
+
+  const updateSertifikasi = (id: string, updates: Partial<RiwayatSertifikasiKompetensi>) => {
+    setFormData({
+      ...formData,
+      riwayatSertifikasiKompetensi: (formData.riwayatSertifikasiKompetensi || []).map((item) =>
+        item.id === id ? { ...item, ...updates } : item
+      ),
+    });
+  };
+
+  const deleteSertifikasi = (id: string) => {
+    setFormData({
+      ...formData,
+      riwayatSertifikasiKompetensi: (formData.riwayatSertifikasiKompetensi || []).filter((item) => item.id !== id),
     });
   };
 
@@ -156,7 +194,8 @@ export function PersonelDetailModal({
   const tabs = [
     { id: 'info' as const, label: 'Info Dasar', icon: FileText },
     { id: 'phone' as const, label: 'Kontak', icon: Phone },
-    { id: 'kedinasan' as const, label: 'Riwayat Kedinasan', icon: Briefcase },
+    { id: 'kedinasan' as const, label: 'Riwayat Dinas', icon: Briefcase },
+    { id: 'sertifikasi' as const, label: 'Sertifikasi Kompetensi', icon: Award },
     { id: 'penghargaan' as const, label: 'Penghargaan', icon: Award },
     { id: 'karya' as const, label: 'Karya', icon: FileText },
   ];
@@ -258,6 +297,15 @@ export function PersonelDetailModal({
                   <Input value={personel.pekerjaan} disabled />
                 </div>
                 <div>
+                  <label className="block text-sm font-medium text-gray-700 mb-1">Keterangan RSAU Asal</label>
+                  <Input
+                    value={formData.rsauAsal || ''}
+                    onChange={(e) => setFormData({ ...formData, rsauAsal: e.target.value })}
+                    disabled={mode === 'view'}
+                    placeholder="Contoh: RSAU dr. Esnawan Antariksa"
+                  />
+                </div>
+                <div>
                   <label className="block text-sm font-medium text-gray-700 mb-1">Status</label>
                   <Input value={personel.status} disabled />
                 </div>
@@ -316,7 +364,7 @@ export function PersonelDetailModal({
               <div className="flex items-center justify-between mb-4">
                 <div className="flex items-center gap-2">
                   <Briefcase className="w-5 h-5 text-blue-600" />
-                  <h3 className="text-lg font-semibold">Riwayat Kedinasan</h3>
+                  <h3 className="text-lg font-semibold">Riwayat Dinas</h3>
                 </div>
                 {mode === 'edit' && (
                   <Button onClick={addKedinasan} size="sm" className="shrink-0">
@@ -400,6 +448,136 @@ export function PersonelDetailModal({
                               updateKedinasan(item.id, { tanggalSelesai: e.target.value })
                             }
                             disabled={mode === 'view'}
+                          />
+                        </div>
+                      </div>
+                    </div>
+                  ))}
+                </div>
+              )}
+            </div>
+          )}
+
+          {/* Riwayat Sertifikasi Kompetensi Tab */}
+          {activeTab === 'sertifikasi' && (
+            <div className="space-y-4">
+              <div className="flex items-center justify-between mb-4">
+                <div className="flex items-center gap-2">
+                  <Award className="w-5 h-5 text-indigo-600" />
+                  <h3 className="text-lg font-semibold">Riwayat Sertifikasi Kompetensi</h3>
+                </div>
+                {mode === 'edit' && (
+                  <Button onClick={addSertifikasi} size="sm" className="shrink-0">
+                    <Plus className="w-4 h-4 mr-1" />
+                    Tambah
+                  </Button>
+                )}
+              </div>
+
+              {(formData.riwayatSertifikasiKompetensi || []).length === 0 ? (
+                <div className="text-center py-8 text-gray-500">
+                  Belum ada riwayat sertifikasi kompetensi
+                </div>
+              ) : (
+                <div className="space-y-4">
+                  {(formData.riwayatSertifikasiKompetensi || []).map((item, index) => (
+                    <div key={item.id} className="p-4 border rounded-lg bg-indigo-50">
+                      <div className="flex items-start justify-between mb-3">
+                        <span className="text-sm font-medium text-gray-500">
+                          #{index + 1}
+                        </span>
+                        {mode === 'edit' && (
+                          <Button
+                            onClick={() => deleteSertifikasi(item.id)}
+                            variant="ghost"
+                            size="sm"
+                            className="text-red-600 hover:text-red-700 hover:bg-red-50"
+                          >
+                            <Trash2 className="w-4 h-4" />
+                          </Button>
+                        )}
+                      </div>
+                      <div className="grid grid-cols-1 gap-3">
+                        <div>
+                          <label className="block text-sm font-medium text-gray-700 mb-1">
+                            Nama Sertifikasi
+                          </label>
+                          <Input
+                            value={item.namaSertifikasi}
+                            onChange={(e) =>
+                              updateSertifikasi(item.id, { namaSertifikasi: e.target.value })
+                            }
+                            disabled={mode === 'view'}
+                            placeholder="Contoh: ACLS"
+                          />
+                        </div>
+                        <div className="grid grid-cols-1 sm:grid-cols-2 gap-3">
+                          <div>
+                            <label className="block text-sm font-medium text-gray-700 mb-1">
+                              Lembaga Penerbit
+                            </label>
+                            <Input
+                              value={item.lembagaPenerbit}
+                              onChange={(e) =>
+                                updateSertifikasi(item.id, { lembagaPenerbit: e.target.value })
+                              }
+                              disabled={mode === 'view'}
+                              placeholder="Contoh: Kolegium Kedokteran"
+                            />
+                          </div>
+                          <div>
+                            <label className="block text-sm font-medium text-gray-700 mb-1">
+                              Nomor Sertifikat
+                            </label>
+                            <Input
+                              value={item.nomorSertifikat || ''}
+                              onChange={(e) =>
+                                updateSertifikasi(item.id, { nomorSertifikat: e.target.value })
+                              }
+                              disabled={mode === 'view'}
+                              placeholder="Opsional"
+                            />
+                          </div>
+                        </div>
+                        <div className="grid grid-cols-1 sm:grid-cols-2 gap-3">
+                          <div>
+                            <label className="block text-sm font-medium text-gray-700 mb-1">
+                              Tanggal Terbit
+                            </label>
+                            <Input
+                              type="date"
+                              value={item.tanggalTerbit}
+                              onChange={(e) =>
+                                updateSertifikasi(item.id, { tanggalTerbit: e.target.value })
+                              }
+                              disabled={mode === 'view'}
+                            />
+                          </div>
+                          <div>
+                            <label className="block text-sm font-medium text-gray-700 mb-1">
+                              Tanggal Berakhir
+                            </label>
+                            <Input
+                              type="date"
+                              value={item.tanggalBerakhir || ''}
+                              onChange={(e) =>
+                                updateSertifikasi(item.id, { tanggalBerakhir: e.target.value })
+                              }
+                              disabled={mode === 'view'}
+                            />
+                          </div>
+                        </div>
+                        <div>
+                          <label className="block text-sm font-medium text-gray-700 mb-1">
+                            Keterangan
+                          </label>
+                          <Input
+                            value={item.keterangan || ''}
+                            onChange={(e) =>
+                              updateSertifikasi(item.id, { keterangan: e.target.value })
+                            }
+                            disabled={mode === 'view'}
+                            placeholder="Keterangan tambahan (opsional)"
                           />
                         </div>
                       </div>

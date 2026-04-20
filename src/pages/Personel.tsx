@@ -136,7 +136,7 @@ export function PersonelPage() {
   };
 
   const handleSaveDetail = (
-    updates: Pick<Personel, 'noHP' | 'riwayatKedinasan' | 'riwayatPenghargaan' | 'riwayatKarya'>
+    updates: Pick<Personel, 'rsauAsal' | 'noHP' | 'riwayatKedinasan' | 'riwayatSertifikasiKompetensi' | 'riwayatPenghargaan' | 'riwayatKarya'>
   ) => {
     if (!user || !selectedPersonel) return;
 
