@@ -36,6 +36,16 @@ export interface RiwayatKedinasan {
   tanggalSelesai?: string;
 }
 
+export interface RiwayatSertifikasiKompetensi {
+  id: string;
+  namaSertifikasi: string;
+  lembagaPenerbit: string;
+  nomorSertifikat?: string;
+  tanggalTerbit: string;
+  tanggalBerakhir?: string;
+  keterangan?: string;
+}
+
 export interface RiwayatPenghargaan {
   id: string;
   nama: string;
@@ -65,9 +75,11 @@ export interface Personel {
   statusBP?: StatusBP;
   tanggalKenaikanPangkatBerikutnya?: string;
   sudahPindahSatuan?: boolean;
+  rsauAsal?: string;
   noHP?: string;
   keluhanBulanan?: Array<{ month: string; count: number }>;
   riwayatKedinasan?: RiwayatKedinasan[];
+  riwayatSertifikasiKompetensi?: RiwayatSertifikasiKompetensi[];
   riwayatPenghargaan?: RiwayatPenghargaan[];
   riwayatKarya?: RiwayatKarya[];
   createdAt: string;
